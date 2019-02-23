@@ -1,0 +1,45 @@
+server:
+  port: 8080
+  servlet:
+    context-path: /
+spring:
+  http:
+    encoding:
+      charset: UTF-8
+  jackson:
+      #前端页面传Date值时格式化
+      date-format: yyyy-MM-dd HH:mm:ss
+      time-zone: GMT+8
+  datasource:
+      driver-class-name: com.mysql.cj.jdbc.Driver
+      url: jdbc:mysql://192.168.8.113:3306/mysql?serverTimezone=Asia/Shanghai
+      username: root
+      password: 614
+  rabbitmq:
+    port: 5672
+    host: 192.168.8.113
+    username: admin
+    password: 614
+    virtual-host: /
+    connection-timeout: 15s
+    #启用消息确认机制。能收到MQ Broker的异步响应
+    publisher-confirms: true
+
+#Redis配置
+  redis:
+    host: 192.168.8.113
+    port: 6379
+    #Redis连接池配置
+    jedis:
+      pool:
+        min-idle: 0
+        max-idle: 8
+        max-active: 8
+        max-wait: -1ms
+
+
+
+
+
+
+

@@ -1,0 +1,55 @@
+server:
+  port: 8081
+  servlet:
+    context-path: /
+spring:
+  http:
+    encoding:
+      charset: UTF-8
+  jackson:
+      #前端页面传Date值时格式化
+      date-format: yyyy-MM-dd HH:mm:ss
+      time-zone: GMT+8
+  datasource:
+      driver-class-name: com.mysql.cj.jdbc.Driver
+      url: jdbc:mysql://192.168.8.113:3306/mysql?serverTimezone=Asia/Shanghai
+      username: root
+      password: 614
+  #rabbitmq基本配置
+  rabbitmq:
+    addresses: 192.168.8.113:5672
+    username: admin
+    password: 614
+    virtual-host: /
+    connection-timeout: 15s
+  #rabbitmq消费端配置
+    listener:
+      simple:
+        #并发数
+        concurrency: 5
+        #最大并发数
+        max-concurrency: 10
+        #签收模式:手工签收、自动签收
+        acknowledge-mode: manual
+        #限流，在此消费端同一时间只有一条消息消费
+        prefetch: 1
+
+
+#Redis配置
+  redis:
+    host: 192.168.8.113
+    port: 6379
+    #Redis连接池配置
+    jedis:
+      pool:
+        min-idle: 0
+        max-idle: 8
+        max-active: 8
+        max-wait: -1ms
+
+
+
+niubi: userService
+
+
+
