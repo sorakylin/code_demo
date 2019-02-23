@@ -1,0 +1,13 @@
+server:
+  port: 8080
+spring:
+  http:
+    encoding:
+      charset: UTF-8
+  jackson:
+    #前端页面传Date值时格式化
+    date-format: yyyy-MM-dd HH:mm:ss
+    time-zone: GMT+8
+
+
+

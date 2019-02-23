@@ -1,0 +1,43 @@
+buildscript {
+    ext {
+        springBootVersion = '2.0.4.RELEASE'
+    }
+    repositories {
+        maven { url 'http://maven.aliyun.com/nexus/content/groups/public/' }
+        mavenCentral()
+    }
+    dependencies {
+        classpath("org.springframework.boot:spring-boot-gradle-plugin:${springBootVersion}")
+    }
+}
+
+apply plugin: 'java'
+apply plugin: 'eclipse'
+apply plugin: 'idea'
+apply plugin: 'org.springframework.boot'
+
+jar {
+    baseName = 'websocket'
+    version = '0.0.1-SNAPSHOT'
+}
+
+sourceCompatibility = 1.8
+targetCompatibility = 1.8
+
+allprojects {
+    repositories {
+        maven { url 'http://maven.aliyun.com/nexus/content/groups/public/' }
+        mavenCentral()
+    }
+}
+
+dependencies {
+    compile fileTree(dir: 'libs', include: ['*.jar'])
+    compile('org.springframework.boot:spring-boot-starter-web:2.0.4.RELEASE')
+    compile('org.springframework.boot:spring-boot-starter-websocket:2.0.4.RELEASE')
+    testCompile('org.springframework.boot:spring-boot-starter-test:2.0.4.RELEASE')
+}
+
+tasks.withType(JavaCompile) {
+    options.encoding = "UTF-8"
+}
