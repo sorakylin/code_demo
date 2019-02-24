@@ -14,14 +14,15 @@
 <input type="button" onclick="websocket.send('666666666')" value="点我发消息"/>
 </body>
 <script type="application/javascript">
+
+    var websocket = new WebSocket("ws://127.0.0.1:8080/ws/serverTwo");
+
     window.onload = function () {
         if (!'WebSocket' in window) return;
-        webSocketOne();
+        webSocketInit();
     };
 
-    function webSocketOne() {
-
-        var websocket = new WebSocket("ws://127.0.0.1:8080/ws/serverOne");
+    function webSocketInit() {
 
         //成功建立连接
         websocket.onopen = function () {
