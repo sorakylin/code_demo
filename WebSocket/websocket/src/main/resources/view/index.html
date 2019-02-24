@@ -15,7 +15,11 @@
 </body>
 <script type="application/javascript">
 
-    var websocket = new WebSocket("ws://127.0.0.1:8080/ws/serverTwo");
+    var websocket = {
+        send: function (str) {
+
+        }
+    };
 
     window.onload = function () {
         if (!'WebSocket' in window) return;
@@ -23,6 +27,7 @@
     };
 
     function webSocketInit() {
+        websocket = new WebSocket("ws://127.0.0.1:8080/ws/serverTwo");
 
         //成功建立连接
         websocket.onopen = function () {
