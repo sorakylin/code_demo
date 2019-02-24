@@ -31,13 +31,14 @@ public class WebSocketConfigTwo implements WebSocketConfigurer {
 
         //前置拦截一般用来注册用户信息，绑定 WebSocketSession
         @Override
-        public boolean beforeHandshake(ServerHttpRequest request, ServerHttpResponse response, WebSocketHandler wsHandler, Map<String, Object> attributes) throws Exception {
+        public boolean beforeHandshake(ServerHttpRequest request, ServerHttpResponse response,
+                                       WebSocketHandler wsHandler, Map<String, Object> attributes) throws Exception {
             System.out.println("前置拦截~~");
 
             if (!(request instanceof ServletServerHttpRequest)) return true;
 
 //            HttpServletRequest servletRequest = ((ServletServerHttpRequest) request).getServletRequest();
-//            String userName = (String) servletRequest.getSession().getAttribute("WEBSOCKET_USERNAME");
+//            String userName = (String) servletRequest.getSession().getAttribute("userName");
             String userName = "Koishipyb";
             attributes.put("userName", userName);
 
@@ -45,7 +46,8 @@ public class WebSocketConfigTwo implements WebSocketConfigurer {
         }
 
         @Override
-        public void afterHandshake(ServerHttpRequest request, ServerHttpResponse response, WebSocketHandler wsHandler, Exception exception) {
+        public void afterHandshake(ServerHttpRequest request, ServerHttpResponse response,
+                                   WebSocketHandler wsHandler, Exception exception) {
             System.out.println("后置拦截~~");
         }
     }

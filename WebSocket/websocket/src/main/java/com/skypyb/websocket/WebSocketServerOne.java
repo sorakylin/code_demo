@@ -28,7 +28,6 @@ public class WebSocketServerOne {
         this.session = session;
         SESSIONS.add(this);
         System.out.println(String.format("成功建立连接~ 当前总连接数为:%s", SESSIONS.size()));
-        System.out.println(this);
     }
 
     @OnClose

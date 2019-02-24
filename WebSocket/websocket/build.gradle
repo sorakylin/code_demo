@@ -33,7 +33,6 @@ allprojects {
 
 dependencies {
     compile fileTree(dir: 'libs', include: ['*.jar'])
-    compile('org.springframework.boot:spring-boot-starter-web:2.0.4.RELEASE')
     compile('org.springframework.boot:spring-boot-starter-websocket:2.0.4.RELEASE')
     testCompile('org.springframework.boot:spring-boot-starter-test:2.0.4.RELEASE')
 }
