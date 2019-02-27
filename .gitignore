@@ -26,7 +26,6 @@
 hs_err_pid*
 
 #dirs
-test/
 .idea/
 gradle/
 .gradle/
