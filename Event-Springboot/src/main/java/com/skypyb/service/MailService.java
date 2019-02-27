@@ -4,6 +4,7 @@ import com.skypyb.event.UserRegisterEvent;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.context.event.EventListener;
+import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
 
 /**
@@ -25,6 +26,7 @@ public class MailService {
      * @param event
      */
     @EventListener
+    @Async
     public void userRegister(UserRegisterEvent event) {
         //send(xxx);
 
