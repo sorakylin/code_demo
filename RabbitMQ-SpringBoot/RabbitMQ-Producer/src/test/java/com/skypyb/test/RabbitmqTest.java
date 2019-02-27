@@ -1,4 +1,4 @@
-package com.skypyb.rabbitmq.client;
+package com.skypyb.test;
 
 import com.skypyb.rabbitmq.Application;
 import com.skypyb.rabbitmq.entity.User1;
