@@ -43,7 +43,7 @@ dependencies {
 //    compile group: 'org.mybatis', name: 'mybatis', version: '3.4.6'
     compile group: 'mysql', name: 'mysql-connector-java', version: '6.0.6'
 //    compile "org.springframework.boot:spring-boot-devtools:2.0.4.RELEASE"
-    compile('org.springframework.boot:spring-boot-starter-test:2.0.4.RELEASE')
+    testCompile('org.springframework.boot:spring-boot-starter-test:2.0.4.RELEASE')
 }
 
 tasks.withType(JavaCompile) {
