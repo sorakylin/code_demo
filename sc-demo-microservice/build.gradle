@@ -1,0 +1,61 @@
+group 'com.skypyb.sc'
+version = '0.0.1-SNAPSHOT'
+apply plugin: 'java'
+sourceCompatibility = 1.8
+targetCompatibility = 1.8
+
+buildscript {
+    ext {
+        //定义一个变量，统一规定springboot的版本
+        springBootVersion = '2.0.5.RELEASE'
+        springCloudVersion = 'Finchley.SR1'
+    }
+    repositories {
+        maven { url 'http://maven.aliyun.com/nexus/content/groups/public/' }
+        jcenter()
+        mavenCentral()
+    }
+
+    dependencies {//用来打包
+        classpath("org.springframework.boot:spring-boot-gradle-plugin:${springBootVersion}")
+    }
+}
+allprojects {
+    repositories {
+        maven { url 'http://maven.aliyun.com/nexus/content/groups/public/' }
+        jcenter()
+        mavenCentral()
+    }
+    //指定编码格式
+    tasks.withType(JavaCompile) {
+        options.encoding = "UTF-8"
+    }
+}
+
+//设定子模块的通用配置
+subprojects {
+
+    apply plugin: 'java'
+    apply plugin: 'idea'
+    //spring boot 插件
+    apply plugin: 'org.springframework.boot'
+    //Gradle插件，提供类似Maven的依赖关系管理功能
+    apply plugin: 'io.spring.dependency-management'
+
+    dependencies {
+        compile('org.springframework.boot:spring-boot-starter-web')
+        testCompile('org.springframework.boot:spring-boot-starter-test')
+    }
+
+    dependencyManagement {
+        imports {
+            //spring bom帮助我们在不指定版本号的情况下声明依赖项。
+            mavenBom "org.springframework.cloud:spring-cloud-dependencies:${springCloudVersion}"
+        }
+    }
+
+    jar {
+        manifest.attributes provider: 'gradle'
+    }
+
+}
