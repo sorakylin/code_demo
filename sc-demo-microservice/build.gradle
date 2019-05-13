@@ -6,7 +6,6 @@ targetCompatibility = 1.8
 
 buildscript {
     ext {
-        //定义一个变量，统一规定springboot的版本
         springBootVersion = '2.0.5.RELEASE'
         springCloudVersion = 'Finchley.SR1'
     }
@@ -20,6 +19,7 @@ buildscript {
         classpath("org.springframework.boot:spring-boot-gradle-plugin:${springBootVersion}")
     }
 }
+
 allprojects {
     repositories {
         maven { url 'http://maven.aliyun.com/nexus/content/groups/public/' }
@@ -44,6 +44,8 @@ subprojects {
 
     dependencies {
         compile('org.springframework.boot:spring-boot-starter-web')
+        compile('org.mybatis.spring.boot:mybatis-spring-boot-starter:1.3.2')
+        compile('mysql:mysql-connector-java')
         testCompile('org.springframework.boot:spring-boot-starter-test')
     }
 
