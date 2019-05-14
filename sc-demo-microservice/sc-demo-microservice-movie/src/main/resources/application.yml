@@ -15,3 +15,16 @@ mybatis:
   #到下划线的表字段自动映射成驼峰命名法
     map-underscore-to-camel-case: true
   mapper-locations: classpath:mybatis/mapper/*.xml
+
+
+#Actuato 配置
+management:
+  endpoint:
+# 暴露shutdown功能
+#    shutdown:
+#      enabled: true
+  endpoints:
+    web:
+      exposure:
+        include: '*'  #暴露哪些端点
+        exclude:      #隐藏哪些端点
