@@ -1,3 +1,4 @@
 rootProject.name = 'sc-demo-microservice'
 include 'sc-demo-microservice-user'
+include 'sc-demo-microservice-movie'
 

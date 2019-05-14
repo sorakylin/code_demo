@@ -1,0 +1,17 @@
+server:
+  port: 8089
+
+spring:
+  datasource:
+    driver-class-name: com.mysql.jdbc.Driver
+    url: jdbc:mysql://192.168.8.113:3306/scdemo?serverTimezone=Asia/Shanghai
+    username: root
+    password: 614
+
+#mybatis实体类名
+mybatis:
+  type-aliases-package: com.skypyb.sc.entity
+  configuration:
+  #到下划线的表字段自动映射成驼峰命名法
+    map-underscore-to-camel-case: true
+  mapper-locations: classpath:mybatis/mapper/*.xml
