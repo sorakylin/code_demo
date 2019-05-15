@@ -2,6 +2,8 @@ server:
   port: 8088
 
 spring:
+  application:
+    name: sc-demo-microservice-user #这个名字会注册到 Eureka 里去
   datasource:
     driver-class-name: com.mysql.jdbc.Driver
     url: jdbc:mysql://192.168.8.113:3306/scdemo?serverTimezone=Asia/Shanghai
@@ -27,3 +29,11 @@ management:
       exposure:
         include: '*'  #暴露哪些端点
         exclude:      #隐藏哪些端点
+
+#Eureka client端配置
+eureka:
+  client:
+    service-url:
+        defaultZone: http://localhost:8080/eureka/
+  instance:
+    prefer-ip-address: true #将自己ip注册到Eureka Server

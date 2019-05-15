@@ -1,5 +1,7 @@
 server:
   port: 8080
+
+#Eureka Server 端配置
 eureka:
   client:
     register-with-eureka: false #是否将自己注册到Eureka server
