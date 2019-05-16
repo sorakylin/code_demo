@@ -35,6 +35,6 @@ management:
 eureka:
   client:
     service-url:
-        defaultZone: http://localhost:8080/eureka/
+        defaultZone: http://user:614@localhost:8080/eureka/,http://user:614@localhost:8081/eureka/
   instance:
     prefer-ip-address: true #将自己ip注册到Eureka Server

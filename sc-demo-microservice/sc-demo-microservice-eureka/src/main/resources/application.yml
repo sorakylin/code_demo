@@ -1,10 +1,42 @@
-server:
-  port: 8080
+
+spring:
+  profiles:
+    active: eureka1 #启动时加上这个命令使用不同的配置 --spring.profiles.active=xxx
+  security:
+    #验证的用户名和密码
+    user:
+      name: user
+      password: 614
 
 #Eureka Server 端配置
 eureka:
   client:
-    register-with-eureka: false #是否将自己注册到Eureka server
-    fetch-registry: true  #是否从 Eureka sever 获取注册信息
+    healthcheck:
+      enabled: true
     service-url:
-        defaultZone: http://localhost:8080/eureka/
+        defaultZone: http://user:614@localhost:8080/eureka/,http://user:614@localhost:8081/eureka/
+
+
+
+
+---
+spring:
+  profiles: eureka1
+  application:
+      name: sc-demo-microservice-eureka_1
+server:
+  port: 8080
+eureka:
+  instance:
+    hostname: eureka1
+
+---
+spring:
+  profiles: eureka2
+  application:
+        name: sc-demo-microservice-eureka_2
+server:
+  port: 8081
+eureka:
+  instance:
+    hostname: eureka2
