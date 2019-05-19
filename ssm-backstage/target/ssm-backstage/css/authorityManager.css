@@ -1,0 +1,12 @@
+.wrap {
+    display: flex;
+    flex-direction: row;
+    flex-wrap: wrap;
+}
+
+.wrap > div {
+    padding: 9px;
+    margin-right: 5px;
+    min-height: 200px;
+    width: 300px;
+}
