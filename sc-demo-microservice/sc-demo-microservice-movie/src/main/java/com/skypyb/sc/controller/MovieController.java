@@ -1,6 +1,7 @@
 package com.skypyb.sc.controller;
 
 import com.skypyb.sc.entity.User;
+import com.skypyb.sc.feign.UserFeignClient;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -22,22 +23,11 @@ public class MovieController {
     private Logger logger = LoggerFactory.getLogger(MovieController.class);
 
     @Autowired
-    private RestTemplate restTemplate;
+    private UserFeignClient userFeignClient;
 
 
-    @Autowired
-    private LoadBalancerClient loadBalancerClient;
-
-
-    @GetMapping("/{id}")
-    public User getUser(@PathVariable Long id) {
-
-        //获取 user 服务的信息,使用到了 Ribbon 实现负载均衡
-        ServiceInstance choose = loadBalancerClient.choose("sc-demo-microservice-user");
-
-        String userUrl = choose.getUri().toString();
-
-        logger.info("access getUser method , service info: {},{}", choose.getServiceId(), userUrl);
-        return restTemplate.getForObject(userUrl + "/user/" + id, User.class);
+    @GetMapping("/user/{id}")
+    public User getUser(@PathVariable("id") Long id) {
+        return userFeignClient.getUser(id);
     }
 }

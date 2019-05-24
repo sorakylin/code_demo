@@ -3,4 +3,5 @@ dependencies {
     compile('mysql:mysql-connector-java')
     compile("org.springframework.cloud:spring-cloud-starter-netflix-eureka-client")
     compile("org.springframework.cloud:spring-cloud-starter-netflix-ribbon")
+    compile("org.springframework.cloud:spring-cloud-starter-openfeign")
 }
