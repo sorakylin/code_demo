@@ -1,0 +1,39 @@
+server:
+  port: 8060
+
+spring:
+  application:
+    name: sc-demo-microservice-zuul #这个名字会注册到 Eureka 里去
+
+#Actuato 配置
+management:
+  endpoint:
+# 暴露shutdown功能
+#    shutdown:
+#      enabled: true
+  endpoints:
+    web:
+      exposure:
+        include: '*'  #暴露哪些端点
+        exclude:      #隐藏哪些端点
+
+#Eureka client端配置
+eureka:
+  client:
+    service-url:
+        defaultZone: http://user:614@localhost:8080/eureka/,http://user:614@localhost:8081/eureka/
+  instance:
+    prefer-ip-address: true #将自己ip注册到Eureka Server
+
+zuul:
+  routes: #路由配置
+    local-router:
+      url: local/test #本地转发
+      path: forward:/local/test
+    user-router:
+      service-id: sc-demo-microservice-user
+      path: /zuul_user/**
+    movie-router:
+      service-id: sc-demo-microservice-movie
+      path: /zuul_movie/**
+  ignored-services: sc-demo-microservice-eureka_1,sc-demo-microservice-eureka_2
