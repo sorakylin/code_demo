@@ -26,14 +26,23 @@ eureka:
     prefer-ip-address: true #将自己ip注册到Eureka Server
 
 zuul:
+  ribbon-isolation-strategy: thread #hystrix隔离策略改为线程 (默认是信号量
+  thread-pool:
+      use-separate-thread-pools: true #让每个路由使用它独立的线程池
+      thread-pool-key-prefix: myprefix- #前缀
   routes: #路由配置
     local-router:
       url: local/test #本地转发
       path: forward:/local/test
+    aggregate-router:
+      url: aggregate/**
+      path: forward:/aggregate/**
     user-router:
+      sensitive-headers: Cookie,Set-Cookie,Authorization  #指定敏感header
       service-id: sc-demo-microservice-user
       path: /zuul_user/**
     movie-router:
       service-id: sc-demo-microservice-movie
       path: /zuul_movie/**
+  #  ignored-services 指定微服务忽略它，不对它进行路由,使用"*" 忽略所有,只路由指定了的
   ignored-services: sc-demo-microservice-eureka_1,sc-demo-microservice-eureka_2
