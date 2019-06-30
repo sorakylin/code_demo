@@ -27,6 +27,7 @@ hs_err_pid*
 
 #dirs
 .idea/
+out/
 gradle/
 .gradle/
-target/
+target/out/

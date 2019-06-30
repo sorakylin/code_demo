@@ -9,6 +9,17 @@ spring:
     url: jdbc:mysql://192.168.8.113:3306/scdemo?serverTimezone=Asia/Shanghai
     username: root
     password: 614
+  zipkin:
+    base-url: http://localhost:9411
+  sleuth:
+    sampler:
+      probability: 1.0 #采样百分比，这里设置的是100%
+
+
+logging:
+  level:
+    root: info
+    org.springframework.web.servlet.DispatcherServlet: debug
 
 #mybatis实体类名
 mybatis:
