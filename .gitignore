@@ -19,6 +19,7 @@
 *.tar.gz
 *.rar
 *.iml
+*.lst
 
 #java files
 
@@ -27,7 +28,14 @@ hs_err_pid*
 
 #dirs
 .idea/
+.mvn/
 out/
 gradle/
 .gradle/
 target/out/
+target/
+
+#files
+HELP.md
+mvnw
+mvnw.cmd
