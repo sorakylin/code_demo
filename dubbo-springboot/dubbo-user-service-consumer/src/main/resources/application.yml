@@ -24,6 +24,7 @@ dubbo:
     id: dubbo
     name: dubbo
     port: 12345
+    serialization: kryo #序列化机制
   #    status: server
   ## RegistryConfig Bean
   registry:
