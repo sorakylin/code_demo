@@ -29,6 +29,8 @@ dubbo:
   registry:
     id: zookeeper
     address: zookeeper://192.168.8.113:2181?backup=192.168.8.113:2182,192.168.8.113:2183
+  provider:
+    loadbalance: roundrobin #负载均衡策略
 
 # Enables Dubbo All Endpoints
 management:
