@@ -1,14 +1,18 @@
 package com.skypyb.security.config;
 
 
+import com.skypyb.security.service.AuthenticationUserService;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.builders.WebSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
-import org.springframework.security.web.authentication.logout.HttpStatusReturningLogoutSuccessHandler;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.header.Header;
 import org.springframework.security.web.header.writers.StaticHeadersWriter;
 import org.springframework.web.cors.CorsConfiguration;
@@ -24,6 +28,9 @@ import java.util.Arrays;
 @EnableWebSecurity
 public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
 
+    @Autowired
+    private AuthenticationUserService authenticationUserService;
+
     @Override
     protected void configure(HttpSecurity httpSecurity) throws Exception {
         httpSecurity.authorizeRequests()
@@ -33,12 +40,6 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
                 .csrf().disable()  //CRSF禁用，因为不使用session
                 .sessionManagement().disable()  //禁用session
                 .formLogin().disable() //禁用form登录
-                //使用默认的logoutFilter
-                .logout()
-//              .logoutUrl("/logout")  //默认就是"/logout"
-//                .addLogoutHandler(tokenClearLogoutHandler())  //logout时清除token
-                .logoutSuccessHandler(new HttpStatusReturningLogoutSuccessHandler()) //logout成功后返回200
-                .and()
                 .sessionManagement().disable();
 
 
@@ -64,6 +65,13 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
     }
 
 
+    @Override
+    protected void configure(AuthenticationManagerBuilder auth) throws Exception {
+        //主要就是设置 UserDetailsService,会用我设置的 BCryptPasswordEncoder 来进行加密比对
+        auth.userDetailsService(authenticationUserService)
+                .passwordEncoder(passwordEncoderBean());
+    }
+
     @Bean
     protected CorsConfigurationSource corsConfigurationSource() {
         CorsConfiguration configuration = new CorsConfiguration();
@@ -81,6 +89,9 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
      * AuthenticationManager:
      * 用户认证的管理类，所有的认证请求（比如login）都会通过提交一个 token 给 AuthenticationManager 的 authenticate() 方法来实现。
      * 具体校验动作会由 AuthenticationManager 将请求转发给具体的实现类来做。根据实现反馈的结果再调用具体的 Handler 来给用户以反馈。
+     * <p>
+     * {@link org.springframework.security.authentication.dao.DaoAuthenticationProvider} 则是其中默认的实现
+     * DaoAuthenticationProvider 中会调用 UserDetailsService 来得到一个 UserDetails 对象
      *
      * @return
      * @throws Exception
@@ -89,5 +100,17 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
     @Override
     public AuthenticationManager authenticationManagerBean() throws Exception {
         return super.authenticationManagerBean();
+    }
+
+
+    /**
+     * Spring Security 的用户要强制你加密的
+     * 这玩意有几个地方用到了，所以注册成Bean，不new了
+     *
+     * @return PasswordEncoder impl
+     */
+    @Bean
+    public PasswordEncoder passwordEncoderBean() {
+        return new BCryptPasswordEncoder();
     }
 }

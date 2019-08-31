@@ -1,0 +1,30 @@
+
+#设置服务器端口号
+server:
+  port: 8080
+
+#security配置
+  jackson:
+    serialization:
+      indent_output: true
+
+
+#JWT配置
+jwt:
+  header: Authorization #请求头部属性名
+  secret: mySecret #自定义口令
+  expiration: 604800 #token失效时间
+  route: #访问路径
+      authentication:
+        path: /auth
+        refresh: /refresh
+
+demo:
+  security:
+    header: Authorization #请求头部属性名
+    signingKey: pyb068@gmail.com #JWT 签名秘钥
+    expiration: 108000000 #token失效时间 30*60*60*1000
+    route:
+      authentication:
+        path: /auth
+        refresh: /refresh
