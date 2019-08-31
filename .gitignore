@@ -30,6 +30,7 @@ hs_err_pid*
 .idea/
 .mvn/
 out/
+build/
 gradle/
 .gradle/
 target/out/
