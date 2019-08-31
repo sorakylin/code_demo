@@ -13,6 +13,7 @@ import java.util.Collection;
  */
 public class AuthenticationUser implements UserDetails {
 
+    private Long userId;
     private String userName;
     private String password;
     private Collection<? extends GrantedAuthority> authorities;
@@ -30,6 +31,10 @@ public class AuthenticationUser implements UserDetails {
     @Override
     public String getUsername() {
         return this.userName;
+    }
+
+    public Long getUserId() {
+        return userId;
     }
 
     /**
