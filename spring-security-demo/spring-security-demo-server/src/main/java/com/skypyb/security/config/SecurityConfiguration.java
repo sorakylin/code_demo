@@ -1,6 +1,7 @@
 package com.skypyb.security.config;
 
 
+import com.skypyb.security.filter.NoCredentialsEntryPoint;
 import com.skypyb.security.service.AuthenticationUserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
@@ -13,6 +14,7 @@ import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.builders.WebSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
+import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.header.Header;
@@ -21,6 +23,7 @@ import org.springframework.util.CollectionUtils;
 import org.springframework.web.cors.CorsConfiguration;
 import org.springframework.web.cors.CorsConfigurationSource;
 import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
+import org.springframework.web.filter.CorsFilter;
 
 import javax.annotation.Resource;
 import java.util.Arrays;
@@ -42,12 +45,11 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
     @Override
     protected void configure(HttpSecurity httpSecurity) throws Exception {
         httpSecurity.authorizeRequests()
-//                .antMatchers("/static/**").permitAll() //静态资源访问无需认证
-                .anyRequest().authenticated()  //默认其它的请求都需要认证，这里一定要添加
+                .anyRequest().authenticated()  //默认请求都需要认证，这里一定要添加
                 .and()
                 .csrf().disable()  //CRSF禁用，因为不使用session
-                .sessionManagement().disable()  //禁用session
-                .formLogin().disable() //禁用form登录
+                .sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS)  //禁用session
+                .and().formLogin().disable() //禁用form登录
                 .sessionManagement().disable();
 
 
@@ -63,6 +65,9 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
                 .and()   //添加header设置，支持跨域和ajax请求
                 .headers()
                 .addHeaderWriter(new StaticHeadersWriter(Arrays.asList(headers)));
+
+        //设置入口点
+        httpSecurity.exceptionHandling().authenticationEntryPoint(new NoCredentialsEntryPoint());
 
     }
 
@@ -95,16 +100,23 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
                 .passwordEncoder(passwordEncoderBean());
     }
 
+
     @Bean
-    protected CorsConfigurationSource corsConfigurationSource() {
-        CorsConfiguration configuration = new CorsConfiguration();
-        configuration.setAllowedOrigins(Arrays.asList("*"));
-        configuration.setAllowedMethods(Arrays.asList("GET", "POST", "HEAD", "OPTION"));
-        configuration.setAllowedHeaders(Arrays.asList("*"));
-        configuration.addExposedHeader("Authorization");
+    public CorsFilter corsFilter(){
         UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
-        source.registerCorsConfiguration("/**", configuration);
-        return source;
+        //跨域请求访问配置
+        CorsConfiguration configuration = new CorsConfiguration();
+
+        configuration.setAllowedOrigins(Arrays.asList("*"));
+        configuration.addAllowedHeader("*");
+        configuration.addAllowedMethod("*");//请求方法限制:如GET/POST，*表示所有都允许
+        //configuration.setAllowCredentials(true);
+        configuration.addAllowedOrigin("*");//容许任何来源的跨域访问
+        configuration.addExposedHeader(securityProperties.getHeader());
+        //对当前这个服务器下所有有的请求都启用这个配置
+        source.registerCorsConfiguration("/**",configuration);
+
+        return new CorsFilter(source);
     }
 
 

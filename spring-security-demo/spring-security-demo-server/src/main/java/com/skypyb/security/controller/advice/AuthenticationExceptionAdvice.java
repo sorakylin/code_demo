@@ -1,7 +1,9 @@
 package com.skypyb.security.controller.advice;
 
+import com.skypyb.security.exception.RequestValidationException;
 import com.skypyb.security.exception.SecurityAuthException;
 import com.skypyb.security.model.response.AuthenticationFailResponse;
+import com.skypyb.security.model.response.ValidationFailResponse;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.ControllerAdvice;
@@ -20,7 +22,12 @@ public class AuthenticationExceptionAdvice {
      * @return SecurityAuthException json
      */
     @ExceptionHandler({SecurityAuthException.class})
-    public ResponseEntity<?> handleAuthenticationException(SecurityAuthException e) {
+    public ResponseEntity<?> handleSecurityAuthException(SecurityAuthException e) {
         return ResponseEntity.ok().body(AuthenticationFailResponse.from(e));
+    }
+
+    @ExceptionHandler({RequestValidationException.class})
+    public ResponseEntity<?> handleRequestValidationException(RequestValidationException e) {
+        return ResponseEntity.ok().body(ValidationFailResponse.from(e));
     }
 }
