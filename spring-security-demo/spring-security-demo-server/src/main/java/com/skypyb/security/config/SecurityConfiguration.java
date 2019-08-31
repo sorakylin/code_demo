@@ -3,8 +3,10 @@ package com.skypyb.security.config;
 
 import com.skypyb.security.service.AuthenticationUserService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.http.HttpMethod;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
@@ -15,11 +17,14 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.header.Header;
 import org.springframework.security.web.header.writers.StaticHeadersWriter;
+import org.springframework.util.CollectionUtils;
 import org.springframework.web.cors.CorsConfiguration;
 import org.springframework.web.cors.CorsConfigurationSource;
 import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
 
+import javax.annotation.Resource;
 import java.util.Arrays;
+import java.util.Collections;
 
 /**
  * Web 安全配置类
@@ -30,6 +35,9 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
 
     @Autowired
     private AuthenticationUserService authenticationUserService;
+
+    @Autowired
+    private SecurityProperties securityProperties;
 
     @Override
     protected void configure(HttpSecurity httpSecurity) throws Exception {
@@ -61,7 +69,22 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
 
     @Override
     public void configure(WebSecurity web) throws Exception {
-        super.configure(web);
+
+
+        //允许匿名访问认证相关的接口
+        SecurityProperties.Route route = this.securityProperties.getRoute();
+        web.ignoring().antMatchers(HttpMethod.POST, route.getAuthPath(), route.getRefreshPath());
+
+        //允许匿名访问指定的url
+        SecurityProperties.Ignore ignore = this.securityProperties.getIgnore();
+        ignore.asMap().entrySet().stream()
+                .filter(entry -> !CollectionUtils.isEmpty(entry.getValue()))
+                .forEach(entry ->
+                        web.ignoring().antMatchers(
+                                entry.getKey(),
+                                entry.getValue().toArray(new String[entry.getValue().size()])
+                        )
+                );
     }
 
 

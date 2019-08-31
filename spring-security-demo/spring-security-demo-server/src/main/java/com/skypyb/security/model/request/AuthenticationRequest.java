@@ -1,8 +1,8 @@
 package com.skypyb.security.model.request;
 
-import org.hibernate.validator.constraints.Range;
 
 import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.Size;
 
 /**
  * 登陆接口接收的请求
@@ -15,7 +15,7 @@ public class AuthenticationRequest {
     private String userName;
 
     @NotBlank(message = "Password can not be blank!")
-    @Range(min = 6, max = 36)
+    @Size(min = 6, max = 36, message = "Password length is incorrect!")
     private String password;
 
     //Verification code ...

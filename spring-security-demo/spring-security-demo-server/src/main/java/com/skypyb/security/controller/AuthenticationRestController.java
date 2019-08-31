@@ -9,6 +9,7 @@ import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.validation.BindingResult;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
@@ -16,14 +17,13 @@ import org.springframework.web.bind.annotation.RestController;
 import javax.validation.Valid;
 
 @RestController
-@RequestMapping("/tk")
 public class AuthenticationRestController {
 
     @Autowired
     private AuthenticationManager authenticationManager;
 
-    @RequestMapping(value = "${demo.security.route.authentication.path}", method = RequestMethod.POST)
-    public AuthenticationResponse createAuthenticationToken(@Valid AuthenticationRequest request, BindingResult validResult) {
+    @RequestMapping(value = "${demo.security.route.auth_path}", method = RequestMethod.POST)
+    public AuthenticationResponse createAuthenticationToken(@Valid @RequestBody AuthenticationRequest request, BindingResult validResult) {
 
         if (validResult.hasErrors()) {
             String errorMsg = validResult.getAllErrors().get(0).getDefaultMessage();
@@ -34,11 +34,11 @@ public class AuthenticationRestController {
         UsernamePasswordAuthenticationToken authenticationToken =
                 new UsernamePasswordAuthenticationToken(request.getUserName(), request.getPassword());
         //效验用户名和密码
-        authenticationManager.authenticate(authenticationToken);
+        Authentication authenticate = authenticationManager.authenticate(authenticationToken);
 
 
         //如果效验正确，那就可以生成token了
-        String token = "";
+        String token = "afasegjawbgkjab.asda.3666";
 
         return new AuthenticationResponse(token);
     }

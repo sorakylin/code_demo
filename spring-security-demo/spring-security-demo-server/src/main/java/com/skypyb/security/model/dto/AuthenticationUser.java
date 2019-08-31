@@ -1,5 +1,6 @@
 package com.skypyb.security.model.dto;
 
+import com.skypyb.user.model.po.UserPO;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
