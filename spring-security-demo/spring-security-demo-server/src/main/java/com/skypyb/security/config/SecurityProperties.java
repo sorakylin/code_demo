@@ -66,7 +66,7 @@ public class SecurityProperties {
         this.route = route;
     }
 
-    class Route {
+    public class Route {
         private String authPath;
         private String refreshPath;
 
@@ -88,7 +88,7 @@ public class SecurityProperties {
     }
 
 
-    class Ignore {
+    public class Ignore {
         private List<String> get;
         private List<String> post;
         private List<String> put;

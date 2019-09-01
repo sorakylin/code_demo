@@ -23,7 +23,7 @@ public class AuthenticationExceptionAdvice {
      */
     @ExceptionHandler({SecurityAuthException.class})
     public ResponseEntity<?> handleSecurityAuthException(SecurityAuthException e) {
-        return ResponseEntity.ok().body(AuthenticationFailResponse.from(e));
+        return ResponseEntity.ok().body(AuthenticationFailResponse.asResponse(e));
     }
 
     @ExceptionHandler({RequestValidationException.class})

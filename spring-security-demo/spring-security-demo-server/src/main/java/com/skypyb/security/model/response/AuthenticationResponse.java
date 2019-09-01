@@ -1,17 +1,11 @@
 package com.skypyb.security.model.response;
 
 /**
- * 认证响应，包含一个token
+ * 认证成功响应
  */
-public class AuthenticationResponse {
+public class AuthenticationResponse extends BasicResponse {
 
-    private String token;
-
-    public AuthenticationResponse(String token) {
-        this.token = token;
-    }
-
-    public String getToken() {
-        return token;
+    public AuthenticationResponse(String message) {
+        super(200, message);
     }
 }

@@ -2,6 +2,7 @@ package com.skypyb.security.config;
 
 
 import com.skypyb.security.filter.AuthenticationFailEntryPoint;
+import com.skypyb.security.filter.authentication.CreateAuthenticationTokenFilter;
 import com.skypyb.security.service.AuthenticationUserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
@@ -16,6 +17,7 @@ import org.springframework.security.config.annotation.web.configuration.WebSecur
 import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.security.web.authentication.logout.LogoutFilter;
 import org.springframework.security.web.header.Header;
 import org.springframework.security.web.header.writers.StaticHeadersWriter;
 import org.springframework.util.CollectionUtils;
@@ -37,6 +39,35 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
 
     @Autowired
     private SecurityProperties securityProperties;
+
+
+    @Override
+    public void configure(WebSecurity web) throws Exception {
+
+
+        //允许匿名访问认证相关的接口
+//        SecurityProperties.Route route = this.securityProperties.getRoute();
+//        web.ignoring().antMatchers(HttpMethod.POST, route.getAuthPath(), route.getRefreshPath());
+
+        //允许匿名访问指定的url
+        SecurityProperties.Ignore ignore = this.securityProperties.getIgnore();
+        ignore.asMap().entrySet().stream()
+                .filter(entry -> !CollectionUtils.isEmpty(entry.getValue()))
+                .forEach(entry ->
+                        web.ignoring().antMatchers(
+                                entry.getKey(),
+                                entry.getValue().toArray(new String[entry.getValue().size()])
+                        )
+                );
+    }
+
+
+    @Override
+    protected void configure(AuthenticationManagerBuilder auth) throws Exception {
+        //主要就是设置 UserDetailsService,会用设置的 BCryptPasswordEncoder 来进行加密比对
+        auth.userDetailsService(authenticationUserService)
+                .passwordEncoder(passwordEncoderBean());
+    }
 
     @Override
     protected void configure(HttpSecurity httpSecurity) throws Exception {
@@ -64,38 +95,31 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
         //设置入口点异常处理
         httpSecurity.exceptionHandling().authenticationEntryPoint(new AuthenticationFailEntryPoint());
 
+
+        createAuthenticationTokenFilterInit(httpSecurity);
+    }
+
+    /**
+     * 创建一个 {@link CreateAuthenticationTokenFilter}
+     * 其实就是一个 provider,注册到默认的AuthenticationManager里，配合其余的 provider 形成一个链条层层判断
+     *
+     * @param httpSecurity
+     * @throws Exception
+     */
+    public void createAuthenticationTokenFilterInit(HttpSecurity httpSecurity) throws Exception {
+        //实例化创建认证 token 的 Filter
+        CreateAuthenticationTokenFilter createAuthenticationTokenFilter
+                = new CreateAuthenticationTokenFilter(this.securityProperties).init();
+
+        //设置 Filter 使用的 AuthenticationManager,这里取公共的即可
+        createAuthenticationTokenFilter.setAuthenticationManager(this.authenticationManagerBean());
+        //将认证的 filter 放到 logoutFilter 这个责任链节点之前
+        httpSecurity
+                .addFilterBefore(createAuthenticationTokenFilter, LogoutFilter.class);
     }
 
 
-    @Override
-    public void configure(WebSecurity web) throws Exception {
-
-
-        //允许匿名访问认证相关的接口
-        SecurityProperties.Route route = this.securityProperties.getRoute();
-        web.ignoring().antMatchers(HttpMethod.POST, route.getAuthPath(), route.getRefreshPath());
-
-        //允许匿名访问指定的url
-        SecurityProperties.Ignore ignore = this.securityProperties.getIgnore();
-        ignore.asMap().entrySet().stream()
-                .filter(entry -> !CollectionUtils.isEmpty(entry.getValue()))
-                .forEach(entry ->
-                        web.ignoring().antMatchers(
-                                entry.getKey(),
-                                entry.getValue().toArray(new String[entry.getValue().size()])
-                        )
-                );
-    }
-
-
-    @Override
-    protected void configure(AuthenticationManagerBuilder auth) throws Exception {
-        //主要就是设置 UserDetailsService,会用我设置的 BCryptPasswordEncoder 来进行加密比对
-        auth.userDetailsService(authenticationUserService)
-                .passwordEncoder(passwordEncoderBean());
-    }
-
-
+    //跨域设置
     @Bean
     public CorsFilter corsFilter() {
         UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
@@ -119,11 +143,8 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
      * AuthenticationManager:
      * 用户认证的管理类，所有的认证请求（比如login）都会通过提交一个 token 给 AuthenticationManager 的 authenticate() 方法来实现。
      * 具体校验动作会由 AuthenticationManager 将请求转发给具体的实现类来做。根据实现反馈的结果再调用具体的 Handler 来给用户以反馈。
-     * <p>
-     * {@link org.springframework.security.authentication.dao.DaoAuthenticationProvider} 则是其中默认的实现
-     * DaoAuthenticationProvider 中会调用 UserDetailsService 来得到一个 UserDetails 对象
      *
-     * @return
+     * @return default AuthenticationManager
      * @throws Exception
      */
     @Bean
