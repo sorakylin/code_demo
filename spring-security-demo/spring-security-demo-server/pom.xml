@@ -14,6 +14,7 @@
 
     <properties>
         <spring-mybatis.version>2.1.0</spring-mybatis.version>
+        <jjwt.version>0.9.1</jjwt.version>
     </properties>
 
     <licenses>
@@ -79,6 +80,13 @@
             <groupId>org.mybatis.spring.boot</groupId>
             <artifactId>mybatis-spring-boot-starter</artifactId>
             <version>${spring-mybatis.version}</version>
+        </dependency>
+
+        <!-- https://mvnrepository.com/artifact/io.jsonwebtoken/jjwt -->
+        <dependency>
+            <groupId>io.jsonwebtoken</groupId>
+            <artifactId>jjwt</artifactId>
+            <version>${jjwt.version}</version>
         </dependency>
 
 

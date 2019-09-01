@@ -19,6 +19,15 @@ public class AuthenticationUser implements UserDetails {
     private String password;
     private Collection<? extends GrantedAuthority> authorities;
 
+
+    public static final AuthenticationUser from() {
+        AuthenticationUser authUser = new AuthenticationUser();
+        authUser.setUserId(1L);
+        authUser.setUserName("skypyb");
+        authUser.setPassword("$2a$10$9ZhDOBp.sRKat4l14ygu/.LscxrMUcDAfeVOEPiYwbcRkoB09gCmi");
+        return authUser;
+    }
+
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
         return this.authorities;
@@ -36,6 +45,22 @@ public class AuthenticationUser implements UserDetails {
 
     public Long getUserId() {
         return userId;
+    }
+
+    public void setUserId(Long userId) {
+        this.userId = userId;
+    }
+
+    public void setUserName(String userName) {
+        this.userName = userName;
+    }
+
+    public void setPassword(String password) {
+        this.password = password;
+    }
+
+    public void setAuthorities(Collection<? extends GrantedAuthority> authorities) {
+        this.authorities = authorities;
     }
 
     /**
@@ -62,4 +87,6 @@ public class AuthenticationUser implements UserDetails {
     public boolean isEnabled() {
         return true;
     }
+
+
 }

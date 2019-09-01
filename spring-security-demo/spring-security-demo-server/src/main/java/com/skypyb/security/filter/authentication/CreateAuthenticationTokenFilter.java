@@ -1,9 +1,11 @@
 package com.skypyb.security.filter.authentication;
 
 import com.skypyb.security.config.SecurityProperties;
+import com.skypyb.security.model.dto.AuthenticationUser;
 import com.skypyb.security.model.request.AuthenticationRequest;
 import com.skypyb.security.model.response.AuthenticationFailResponse;
 import com.skypyb.security.model.response.AuthenticationResponse;
+import com.skypyb.security.util.JwtTokenUtil;
 import org.codehaus.jackson.map.ObjectMapper;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -50,8 +52,10 @@ public class CreateAuthenticationTokenFilter extends AbstractAuthenticationProce
     public CreateAuthenticationTokenFilter init() {
         //设置失败的Handler
         this.setAuthenticationFailureHandler(new FailureHandler());
+
+        JwtTokenUtil jwtTokenUtil = new JwtTokenUtil(properties.getSigningKey(), properties.getTokenExpiration());
         //设置成功的Handler
-        this.setAuthenticationSuccessHandler(new SuccessHandler());
+        this.setAuthenticationSuccessHandler(new SuccessHandler(jwtTokenUtil));
 
         //不将认证后的context放入session
         this.setSessionAuthenticationStrategy(new NullAuthenticatedSessionStrategy());
@@ -91,17 +95,19 @@ public class CreateAuthenticationTokenFilter extends AbstractAuthenticationProce
      */
     public class SuccessHandler implements AuthenticationSuccessHandler {
 
+        private JwtTokenUtil jwtTokenUtil;
 
-        public SuccessHandler() {
+        public SuccessHandler(JwtTokenUtil jwtTokenUtil) {
+            this.jwtTokenUtil = jwtTokenUtil;
         }
 
         @Override
         public void onAuthenticationSuccess(HttpServletRequest request, HttpServletResponse response,
                                             Authentication authentication) throws IOException, ServletException {
 
-            UserDetails user = (UserDetails) authentication.getPrincipal();
+            AuthenticationUser user = (AuthenticationUser) authentication.getPrincipal();
 
-            String token = "afasegjawbgkjab.asda.3666";
+            String token = jwtTokenUtil.generateToken(user);
             logger.info("User :{} Create authentication token successful.", user.getUsername());
 
             //生成token，然后返回
