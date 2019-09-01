@@ -1,10 +1,9 @@
 package com.skypyb.security.config;
 
 
-import com.skypyb.security.filter.NoCredentialsEntryPoint;
+import com.skypyb.security.filter.AuthenticationFailEntryPoint;
 import com.skypyb.security.service.AuthenticationUserService;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.HttpMethod;
@@ -21,13 +20,10 @@ import org.springframework.security.web.header.Header;
 import org.springframework.security.web.header.writers.StaticHeadersWriter;
 import org.springframework.util.CollectionUtils;
 import org.springframework.web.cors.CorsConfiguration;
-import org.springframework.web.cors.CorsConfigurationSource;
 import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
 import org.springframework.web.filter.CorsFilter;
 
-import javax.annotation.Resource;
 import java.util.Arrays;
-import java.util.Collections;
 
 /**
  * Web 安全配置类
@@ -49,8 +45,7 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
                 .and()
                 .csrf().disable()  //CRSF禁用，因为不使用session
                 .sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS)  //禁用session
-                .and().formLogin().disable() //禁用form登录
-                .sessionManagement().disable();
+                .and().formLogin().disable();//禁用form登录
 
 
         final Header[] headers = new Header[]{
@@ -66,8 +61,8 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
                 .headers()
                 .addHeaderWriter(new StaticHeadersWriter(Arrays.asList(headers)));
 
-        //设置入口点
-        httpSecurity.exceptionHandling().authenticationEntryPoint(new NoCredentialsEntryPoint());
+        //设置入口点异常处理
+        httpSecurity.exceptionHandling().authenticationEntryPoint(new AuthenticationFailEntryPoint());
 
     }
 
@@ -102,7 +97,7 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
 
 
     @Bean
-    public CorsFilter corsFilter(){
+    public CorsFilter corsFilter() {
         UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
         //跨域请求访问配置
         CorsConfiguration configuration = new CorsConfiguration();
@@ -114,7 +109,7 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
         configuration.addAllowedOrigin("*");//容许任何来源的跨域访问
         configuration.addExposedHeader(securityProperties.getHeader());
         //对当前这个服务器下所有有的请求都启用这个配置
-        source.registerCorsConfiguration("/**",configuration);
+        source.registerCorsConfiguration("/**", configuration);
 
         return new CorsFilter(source);
     }

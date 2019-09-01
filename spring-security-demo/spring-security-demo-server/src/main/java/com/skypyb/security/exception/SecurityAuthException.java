@@ -1,13 +1,16 @@
 package com.skypyb.security.exception;
 
 
-public class SecurityAuthException extends RuntimeException {
+import org.springframework.security.core.AuthenticationException;
+
+public class SecurityAuthException extends AuthenticationException {
 
     private int code;
 
     private String message;
 
     public SecurityAuthException(String message) {
+        super(message);
         this.code = 401;
         this.message = message;
     }

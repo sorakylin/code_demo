@@ -13,6 +13,8 @@ import org.springframework.security.authentication.DisabledException;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.web.access.ExceptionTranslationFilter;
+import org.springframework.security.web.access.intercept.FilterSecurityInterceptor;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -63,7 +65,7 @@ public class AuthenticationRestController {
         } catch (DisabledException e) {
             throw new SecurityAuthException("User is disabled!");
         } catch (BadCredentialsException e) {
-            throw new SecurityAuthException("Wrong password!");
+            throw new SecurityAuthException("Wrong credentials!");
         }
     }
 
