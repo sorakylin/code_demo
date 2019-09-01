@@ -37,5 +37,22 @@
         WHERE us.user_name=#{userName}
     </select>
 
+    <select id="findUserMinimumPermission" resultType="com.skypyb.user.model.dto.MinimumPermissionDTO">
+        SELECT
+            per.permission_id AS permissionId,
+            per.name AS name,
+            per.en_name AS enName,
+            per.url AS url,
+            per.method AS method
+        FROM
+            securitydemo.tb_user AS us
+            LEFT JOIN tb_user_role AS usr ON us.user_id = usr.user_id
+            LEFT JOIN tb_role AS ro ON ro.role_id = usr.role_id
+            LEFT JOIN tb_role_permission AS rp ON ro.role_id = rp.role_id
+            LEFT JOIN tb_permission AS per ON per.permission_id = rp.permission_id
+        WHERE us.user_id = #{userId}
+        HAVING per.permission_id > 0
+    </select>
+
 
 </mapper>

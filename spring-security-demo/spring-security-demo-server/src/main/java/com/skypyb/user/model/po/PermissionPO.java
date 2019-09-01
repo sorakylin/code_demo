@@ -1,9 +1,11 @@
 package com.skypyb.user.model.po;
 
+import java.io.Serializable;
 import java.util.Date;
+import java.util.Objects;
 
 //tb_permission 权限表
-public class PermissionPO {
+public class PermissionPO implements Serializable{
 
     private Long permissionId;
     private Long parentId;
@@ -85,5 +87,19 @@ public class PermissionPO {
 
     public void setUpdateTime(Date updateTime) {
         this.updateTime = updateTime;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        PermissionPO that = (PermissionPO) o;
+        return Objects.equals(permissionId, that.permissionId);
+    }
+
+    @Override
+    public int hashCode() {
+
+        return Objects.hash(permissionId);
     }
 }

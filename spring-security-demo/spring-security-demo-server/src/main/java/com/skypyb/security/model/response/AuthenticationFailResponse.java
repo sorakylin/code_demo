@@ -4,6 +4,7 @@ package com.skypyb.security.model.response;
 import com.skypyb.security.exception.SecurityAuthException;
 import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.authentication.DisabledException;
+import org.springframework.security.authentication.InternalAuthenticationServiceException;
 import org.springframework.security.core.AuthenticationException;
 
 /**
@@ -18,6 +19,10 @@ public class AuthenticationFailResponse extends BasicResponse {
 
     public static AuthenticationFailResponse asResponse(AuthenticationException e) {
         AuthenticationFailResponse unauthorized;
+
+        if (e instanceof InternalAuthenticationServiceException) {
+            e = (AuthenticationException) e.getCause();
+        }
 
         if (e instanceof SecurityAuthException) {
             SecurityAuthException ex = (SecurityAuthException) e;

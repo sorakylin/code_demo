@@ -2,16 +2,21 @@ package com.skypyb.security.service;
 
 import com.skypyb.security.exception.SecurityAuthException;
 import com.skypyb.security.model.dto.AuthenticationUser;
+import com.skypyb.user.model.dto.MinimumPermissionDTO;
 import com.skypyb.user.model.dto.MinimumUserDTO;
-import com.skypyb.user.model.po.UserPO;
 import com.skypyb.user.service.UserService;
+import com.zaxxer.hikari.util.FastList;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.security.core.userdetails.User;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
-import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+
+import java.util.ArrayList;
+import java.util.List;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 @Service
 public class AuthenticationUserService implements UserDetailsService {
@@ -30,13 +35,16 @@ public class AuthenticationUserService implements UserDetailsService {
     @Override
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
 
-        if (!username.equals("skypyb")) {
-            throw new SecurityAuthException("User name not found!");
-        }
-
         MinimumUserDTO user = userService.findMinimumUser(username)
                 .orElseThrow(() -> new SecurityAuthException("User not found!"));
 
-        return AuthenticationUser.from(user);
+        List<MinimumPermissionDTO> permission = userService.findUserMinimumPermission(user.getUserId());
+
+        ArrayList<SimpleGrantedAuthority> authorities = permission
+                .stream()
+                .map(per -> new SimpleGrantedAuthority(per.getEnName()))
+                .collect(Collectors.toCollection(() -> new ArrayList(permission.size())));
+
+        return AuthenticationUser.from(user).setAuthorities(authorities);
     }
 }

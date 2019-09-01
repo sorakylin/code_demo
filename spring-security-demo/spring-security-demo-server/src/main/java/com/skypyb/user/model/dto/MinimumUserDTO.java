@@ -1,7 +1,10 @@
 package com.skypyb.user.model.dto;
 
+import java.io.Serializable;
+import java.util.Objects;
+
 //最低限度的用户基本信息
-public class MinimumUserDTO {
+public class MinimumUserDTO implements Serializable {
 
     private Long userId;
     private String userName;
@@ -29,5 +32,19 @@ public class MinimumUserDTO {
 
     public void setPassword(String password) {
         this.password = password;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        MinimumUserDTO that = (MinimumUserDTO) o;
+        return Objects.equals(userId, that.userId);
+    }
+
+    @Override
+    public int hashCode() {
+
+        return Objects.hash(userId);
     }
 }

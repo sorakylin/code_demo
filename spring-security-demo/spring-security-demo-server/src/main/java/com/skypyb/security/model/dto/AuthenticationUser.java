@@ -59,8 +59,9 @@ public class AuthenticationUser implements UserDetails {
         this.password = password;
     }
 
-    public void setAuthorities(Collection<? extends GrantedAuthority> authorities) {
+    public AuthenticationUser setAuthorities(Collection<? extends GrantedAuthority> authorities) {
         this.authorities = authorities;
+        return this;
     }
 
     /**
