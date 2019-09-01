@@ -21,7 +21,7 @@ import java.io.PrintWriter;
  */
 public class AuthenticationFailEntryPoint implements AuthenticationEntryPoint {
 
-    private Logger logger = LoggerFactory.getLogger(this.getClass());
+    private Logger logger = LoggerFactory.getLogger("SECURITY");
 
     @Override
     public void commence(HttpServletRequest httpServletRequest,

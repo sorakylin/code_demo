@@ -12,6 +12,10 @@
     <artifactId>spring-security-demo-server</artifactId>
     <url>http://www.skypyb.com</url>
 
+    <properties>
+        <spring-mybatis.version>2.1.0</spring-mybatis.version>
+    </properties>
+
     <licenses>
         <license>
             <name>Apache 2.0</name>
@@ -48,6 +52,36 @@
             <groupId>org.springframework.cloud</groupId>
             <artifactId>spring-cloud-starter-oauth2</artifactId>
         </dependency>
+
+        <!-- 数据库 -->
+        <dependency>
+            <groupId>com.zaxxer</groupId>
+            <artifactId>HikariCP</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-jdbc</artifactId>
+            <exclusions>
+                <!-- 排除 tomcat-jdbc 以使用 HikariCP -->
+                <exclusion>
+                    <groupId>org.apache.tomcat</groupId>
+                    <artifactId>tomcat-jdbc</artifactId>
+                </exclusion>
+            </exclusions>
+        </dependency>
+        <dependency>
+            <groupId>mysql</groupId>
+            <artifactId>mysql-connector-java</artifactId>
+        </dependency>
+
+        <!-- https://mvnrepository.com/artifact/org.mybatis.spring.boot/mybatis-spring-boot-starter -->
+        <dependency>
+            <groupId>org.mybatis.spring.boot</groupId>
+            <artifactId>mybatis-spring-boot-starter</artifactId>
+            <version>${spring-mybatis.version}</version>
+        </dependency>
+
+
     </dependencies>
 
     <build>

@@ -1,8 +1,6 @@
 package com.skypyb.security.filter.authentication;
 
 import com.skypyb.security.config.SecurityProperties;
-import com.skypyb.security.exception.SecurityAuthException;
-import com.skypyb.security.model.dto.AuthenticationUser;
 import com.skypyb.security.model.request.AuthenticationRequest;
 import com.skypyb.security.model.response.AuthenticationFailResponse;
 import com.skypyb.security.model.response.AuthenticationResponse;
@@ -12,7 +10,6 @@ import org.slf4j.LoggerFactory;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.AuthenticationException;
-import org.springframework.security.core.userdetails.User;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.web.authentication.AbstractAuthenticationProcessingFilter;
 import org.springframework.security.web.authentication.AuthenticationFailureHandler;
@@ -33,7 +30,7 @@ import java.nio.charset.Charset;
  */
 public class CreateAuthenticationTokenFilter extends AbstractAuthenticationProcessingFilter {
 
-    private final Logger logger = LoggerFactory.getLogger(getClass());
+    private final Logger logger = LoggerFactory.getLogger("SECURITY");
 
     private SecurityProperties properties;
 
