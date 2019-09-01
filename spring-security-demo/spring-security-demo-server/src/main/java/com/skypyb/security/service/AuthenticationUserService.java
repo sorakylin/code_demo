@@ -2,6 +2,7 @@ package com.skypyb.security.service;
 
 import com.skypyb.security.exception.SecurityAuthException;
 import com.skypyb.security.model.dto.AuthenticationUser;
+import com.skypyb.user.model.dto.MinimumUserDTO;
 import com.skypyb.user.model.po.UserPO;
 import com.skypyb.user.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -15,8 +16,6 @@ import org.springframework.stereotype.Service;
 @Service
 public class AuthenticationUserService implements UserDetailsService {
 
-    @Autowired
-    private PasswordEncoder encoder;
     @Autowired
     private UserService userService;
 
@@ -35,11 +34,9 @@ public class AuthenticationUserService implements UserDetailsService {
             throw new SecurityAuthException("User name not found!");
         }
 
-        UserPO user = userService.findUser(username);
-        if (user == null) {
-            throw new SecurityAuthException("User not found!");
-        }
+        MinimumUserDTO user = userService.findMinimumUser(username)
+                .orElseThrow(() -> new SecurityAuthException("User not found!"));
 
-        return AuthenticationUser.from();
+        return AuthenticationUser.from(user);
     }
 }

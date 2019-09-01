@@ -1,6 +1,6 @@
 package com.skypyb.security.model.dto;
 
-import com.skypyb.user.model.po.UserPO;
+import com.skypyb.user.model.dto.MinimumUserDTO;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
@@ -20,11 +20,11 @@ public class AuthenticationUser implements UserDetails {
     private Collection<? extends GrantedAuthority> authorities;
 
 
-    public static final AuthenticationUser from() {
+    public static final AuthenticationUser from(MinimumUserDTO user) {
         AuthenticationUser authUser = new AuthenticationUser();
-        authUser.setUserId(1L);
-        authUser.setUserName("skypyb");
-        authUser.setPassword("$2a$10$9ZhDOBp.sRKat4l14ygu/.LscxrMUcDAfeVOEPiYwbcRkoB09gCmi");
+        authUser.setUserId(user.getUserId());
+        authUser.setUserName(user.getUserName());
+        authUser.setPassword(user.getPassword());
         return authUser;
     }
 
