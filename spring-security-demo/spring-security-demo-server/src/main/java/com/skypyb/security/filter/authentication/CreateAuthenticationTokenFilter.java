@@ -36,11 +36,13 @@ public class CreateAuthenticationTokenFilter extends AbstractAuthenticationProce
 
     private SecurityProperties properties;
 
+    private JwtTokenUtil jwtTokenUtil;
 
-    public CreateAuthenticationTokenFilter(SecurityProperties properties) {
+    public CreateAuthenticationTokenFilter(SecurityProperties properties,JwtTokenUtil jwtTokenUtil) {
         //拦截url为 authPath 的POST请求
         super(new AntPathRequestMatcher(properties.getRoute().getAuthPath(), "POST"));
         this.properties = properties;
+        this.jwtTokenUtil = jwtTokenUtil;
     }
 
 
@@ -53,9 +55,8 @@ public class CreateAuthenticationTokenFilter extends AbstractAuthenticationProce
         //设置失败的Handler
         this.setAuthenticationFailureHandler(new FailureHandler());
 
-        JwtTokenUtil jwtTokenUtil = new JwtTokenUtil(properties.getSigningKey(), properties.getTokenExpiration());
         //设置成功的Handler
-        this.setAuthenticationSuccessHandler(new SuccessHandler(jwtTokenUtil));
+        this.setAuthenticationSuccessHandler(new SuccessHandler());
 
         //不将认证后的context放入session
         this.setSessionAuthenticationStrategy(new NullAuthenticatedSessionStrategy());
@@ -95,11 +96,6 @@ public class CreateAuthenticationTokenFilter extends AbstractAuthenticationProce
      */
     public class SuccessHandler implements AuthenticationSuccessHandler {
 
-        private JwtTokenUtil jwtTokenUtil;
-
-        public SuccessHandler(JwtTokenUtil jwtTokenUtil) {
-            this.jwtTokenUtil = jwtTokenUtil;
-        }
 
         @Override
         public void onAuthenticationSuccess(HttpServletRequest request, HttpServletResponse response,

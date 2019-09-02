@@ -2,8 +2,10 @@ package com.skypyb.security.config;
 
 
 import com.skypyb.security.filter.AuthenticationFailEntryPoint;
+import com.skypyb.security.filter.access.JwtAuthenticationTokenFilter;
 import com.skypyb.security.filter.authentication.CreateAuthenticationTokenFilter;
 import com.skypyb.security.service.AuthenticationUserService;
+import com.skypyb.security.util.JwtTokenUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -15,8 +17,10 @@ import org.springframework.security.config.annotation.web.builders.WebSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
 import org.springframework.security.config.http.SessionCreationPolicy;
+import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 import org.springframework.security.web.authentication.logout.LogoutFilter;
 import org.springframework.security.web.header.Header;
 import org.springframework.security.web.header.writers.StaticHeadersWriter;
@@ -96,7 +100,15 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
         httpSecurity.exceptionHandling().authenticationEntryPoint(new AuthenticationFailEntryPoint());
 
 
-        createAuthenticationTokenFilterInit(httpSecurity);
+        createAuthenticationTokenFilter(httpSecurity);
+        createJwtTokenFilterInit(httpSecurity);
+    }
+
+    private void createJwtTokenFilterInit(HttpSecurity httpSecurity) {
+        JwtAuthenticationTokenFilter authenticationTokenFilter =
+                new JwtAuthenticationTokenFilter(securityProperties, jwtTokenUtil(), authenticationUserService);
+        httpSecurity
+                .addFilterAfter(authenticationTokenFilter, LogoutFilter.class);
     }
 
     /**
@@ -106,10 +118,10 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
      * @param httpSecurity
      * @throws Exception
      */
-    public void createAuthenticationTokenFilterInit(HttpSecurity httpSecurity) throws Exception {
+    public void createAuthenticationTokenFilter(HttpSecurity httpSecurity) throws Exception {
         //实例化创建认证 token 的 Filter
         CreateAuthenticationTokenFilter createAuthenticationTokenFilter
-                = new CreateAuthenticationTokenFilter(this.securityProperties).init();
+                = new CreateAuthenticationTokenFilter(this.securityProperties, jwtTokenUtil()).init();
 
         //设置 Filter 使用的 AuthenticationManager,这里取公共的即可
         createAuthenticationTokenFilter.setAuthenticationManager(this.authenticationManagerBean());
@@ -138,6 +150,12 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
         return new CorsFilter(source);
     }
 
+    //Jwt的工具类
+    @Bean
+    public JwtTokenUtil jwtTokenUtil() {
+        return new JwtTokenUtil(securityProperties.getSigningKey(), securityProperties.getTokenExpiration());
+    }
+
 
     /**
      * AuthenticationManager:
@@ -164,4 +182,5 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
     public PasswordEncoder passwordEncoderBean() {
         return new BCryptPasswordEncoder();
     }
+
 }
