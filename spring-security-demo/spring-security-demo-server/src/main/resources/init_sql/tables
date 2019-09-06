@@ -1,7 +1,6 @@
 USE securitydemo;
 CREATE TABLE `tb_permission` (
   `permission_id` bigint(20) NOT NULL AUTO_INCREMENT,
-  `parent_id` bigint(20) DEFAULT NULL COMMENT '父权限',
   `name` varchar(64) NOT NULL COMMENT '权限名称',
   `en_name` varchar(64) NOT NULL COMMENT '权限英文名称',
   `url` varchar(255) NOT NULL COMMENT '授权路径',
@@ -12,6 +11,9 @@ CREATE TABLE `tb_permission` (
   PRIMARY KEY (`permission_id`)
 ) ENGINE=InnoDB AUTO_INCREMENT=10000 DEFAULT CHARSET=utf8 COMMENT='权限表';
 
+INSERT INTO tb_permission(permission_id, parent_id, name, en_name, url, method, description, create_time, update_time)
+  VALUES (1 ,'测试管理接口','TEST_ADMIN_RESOURCE','/protectedadmin','GET','',NOW(),NOW()),
+    (2,'测试普通用户接口','TEST_USER_RESOURCE','/protecteduser','GET','',NOW(),NOW());
 
 CREATE TABLE `tb_role` (
   `role_id` bigint(20) NOT NULL AUTO_INCREMENT,
@@ -24,6 +26,10 @@ CREATE TABLE `tb_role` (
   PRIMARY KEY (`role_id`)
 ) ENGINE=InnoDB AUTO_INCREMENT=10000 DEFAULT CHARSET=utf8 COMMENT='角色表';
 
+INSERT INTO tb_role(role_id, parent_id, name, en_name, description, create_time, update_time) VALUES
+  (1,NULL ,'管理员','ADMIN',NULL ,NOW(),NOW()),
+  (2,NULL ,'普通用户','USER',NULL ,NOW(),NOW());
+
 
 CREATE TABLE `tb_role_permission` (
   `id` bigint(20) NOT NULL AUTO_INCREMENT,
@@ -32,6 +38,8 @@ CREATE TABLE `tb_role_permission` (
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB AUTO_INCREMENT=10000 DEFAULT CHARSET=utf8 COMMENT='角色权限表';
 
+INSERT INTO tb_role_permission(role_id, permission_id) VALUES
+  (1,1),(2,2);
 
 CREATE TABLE `tb_user` (
   `user_id` bigint(20) NOT NULL AUTO_INCREMENT,
@@ -45,10 +53,9 @@ CREATE TABLE `tb_user` (
 ) ENGINE=InnoDB AUTO_INCREMENT=10000 DEFAULT CHARSET=utf8 COMMENT='用户表';
 
 -- 密码是123456
-INSERT INTO `tb_user`(`user_id`,`user_name`,`password`,`create_time`,`state`)
-VALUES (1,'skypyb','$2a$10$9ZhDOBp.sRKat4l14ygu/.LscxrMUcDAfeVOEPiYwbcRkoB09gCmi',
-        NOW(),1);
-
+INSERT INTO `tb_user`(`user_id`,`user_name`,`password`,`create_time`,`state`) VALUES
+  (1,'admin','$2a$10$9ZhDOBp.sRKat4l14ygu/.LscxrMUcDAfeVOEPiYwbcRkoB09gCmi',NOW(),1),
+  (2,'skypyb','$2a$10$9ZhDOBp.sRKat4l14ygu/.LscxrMUcDAfeVOEPiYwbcRkoB09gCmi',NOW(),1);
 
 
 CREATE TABLE `tb_user_role` (
@@ -57,3 +64,6 @@ CREATE TABLE `tb_user_role` (
   `role_id` bigint(20) NOT NULL COMMENT '角色 ID',
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB AUTO_INCREMENT=10000 DEFAULT CHARSET=utf8 COMMENT='用户角色表';
+
+INSERT INTO tb_user_role(user_id, role_id) VALUES
+  (1,1),(2,2);

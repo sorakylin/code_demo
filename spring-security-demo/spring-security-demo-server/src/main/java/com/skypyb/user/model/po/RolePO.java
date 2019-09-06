@@ -4,24 +4,36 @@ import java.io.Serializable;
 import java.util.Date;
 import java.util.Objects;
 
-//tb_permission 权限表
-public class PermissionPO implements Serializable{
+public class RolePO implements Serializable {
 
-    private Long permissionId;
+    private Long roleId;
+
+    private Long parentId;
+
     private String name;
+
     private String enName;
-    private String url;
-    private String method;
+
     private String description;
+
     private Date createTime;
+
     private Date updateTime;
 
-    public Long getPermissionId() {
-        return permissionId;
+    public Long getRoleId() {
+        return roleId;
     }
 
-    public void setPermissionId(Long permissionId) {
-        this.permissionId = permissionId;
+    public void setRoleId(Long roleId) {
+        this.roleId = roleId;
+    }
+
+    public Long getParentId() {
+        return parentId;
+    }
+
+    public void setParentId(Long parentId) {
+        this.parentId = parentId;
     }
 
     public String getName() {
@@ -38,22 +50,6 @@ public class PermissionPO implements Serializable{
 
     public void setEnName(String enName) {
         this.enName = enName;
-    }
-
-    public String getUrl() {
-        return url;
-    }
-
-    public void setUrl(String url) {
-        this.url = url;
-    }
-
-    public String getMethod() {
-        return method;
-    }
-
-    public void setMethod(String method) {
-        this.method = method;
     }
 
     public String getDescription() {
@@ -84,13 +80,13 @@ public class PermissionPO implements Serializable{
     public boolean equals(Object o) {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
-        PermissionPO that = (PermissionPO) o;
-        return Objects.equals(permissionId, that.permissionId);
+        RolePO rolePO = (RolePO) o;
+        return Objects.equals(roleId, rolePO.roleId);
     }
 
     @Override
     public int hashCode() {
 
-        return Objects.hash(permissionId);
+        return Objects.hash(roleId);
     }
 }

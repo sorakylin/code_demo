@@ -54,5 +54,24 @@
         HAVING per.permission_id > 0
     </select>
 
+    <select id="findAllMinimumPermission" resultType="com.skypyb.user.model.dto.MinimumPermissionDTO">
+        SELECT
+            per.permission_id AS permissionId,
+            per.name AS name,
+            per.en_name AS enName,
+            per.url AS url,
+            per.method AS method
+        FROM
+            securitydemo.tb_permission AS per
+    </select>
+
+    <select id="findAllMinimumRoleDTO" resultType="com.skypyb.user.model.dto.MinimumRoleDTO">
+        SELECT
+            role.role_id AS roleId,
+            role.parent_id AS parentId,
+            role.name AS name,
+            role.en_name AS enName
+        FROM securitydemo.tb_role role
+    </select>
 
 </mapper>

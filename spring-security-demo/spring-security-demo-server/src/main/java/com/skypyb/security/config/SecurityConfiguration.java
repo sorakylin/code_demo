@@ -99,13 +99,6 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
         createJwtTokenFilterInit(httpSecurity);
     }
 
-    private void createJwtTokenFilterInit(HttpSecurity httpSecurity) {
-        JwtAuthenticationTokenFilter authenticationTokenFilter =
-                new JwtAuthenticationTokenFilter(securityProperties, jwtTokenUtil(), authenticationUserService);
-        httpSecurity
-                .addFilterAfter(authenticationTokenFilter, LogoutFilter.class);
-    }
-
     /**
      * 创建一个 {@link CreateAuthenticationTokenFilter}
      * 其实就是一个 provider,注册到默认的AuthenticationManager里，配合其余的 provider 形成一个链条层层判断
@@ -123,6 +116,13 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
         //将认证的 filter 放到 logoutFilter 这个责任链节点之前
         httpSecurity
                 .addFilterBefore(createAuthenticationTokenFilter, LogoutFilter.class);
+    }
+
+    private void createJwtTokenFilterInit(HttpSecurity httpSecurity) {
+        JwtAuthenticationTokenFilter authenticationTokenFilter =
+                new JwtAuthenticationTokenFilter(securityProperties, jwtTokenUtil(), authenticationUserService);
+        httpSecurity
+                .addFilterAfter(authenticationTokenFilter, LogoutFilter.class);
     }
 
 

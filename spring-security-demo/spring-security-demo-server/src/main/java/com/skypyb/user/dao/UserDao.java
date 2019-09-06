@@ -1,6 +1,7 @@
 package com.skypyb.user.dao;
 
 import com.skypyb.user.model.dto.MinimumPermissionDTO;
+import com.skypyb.user.model.dto.MinimumRoleDTO;
 import com.skypyb.user.model.dto.MinimumUserDTO;
 import com.skypyb.user.model.po.UserPO;
 import org.apache.ibatis.annotations.Param;
@@ -17,4 +18,8 @@ public interface UserDao {
     Optional<MinimumUserDTO> findMinimumUser(@Param("userName") String userName);
 
     List<MinimumPermissionDTO> findUserMinimumPermission(@Param("userId") Long userId);
+
+    List<MinimumPermissionDTO> findAllMinimumPermission();
+
+    List<MinimumRoleDTO> findAllMinimumRoleDTO();
 }

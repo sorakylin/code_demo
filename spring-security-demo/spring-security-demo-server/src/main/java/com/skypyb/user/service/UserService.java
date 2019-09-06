@@ -2,6 +2,7 @@ package com.skypyb.user.service;
 
 import com.skypyb.user.dao.UserDao;
 import com.skypyb.user.model.dto.MinimumPermissionDTO;
+import com.skypyb.user.model.dto.MinimumRoleDTO;
 import com.skypyb.user.model.dto.MinimumUserDTO;
 import com.skypyb.user.model.po.UserPO;
 import org.springframework.stereotype.Service;
@@ -34,6 +35,27 @@ public class UserService {
     public List<MinimumPermissionDTO> findUserMinimumPermission(Long userId) {
         return dao.findUserMinimumPermission(userId);
     }
+
+    /**
+     * 查数据库里所有的权限
+     * 一般来说是在系统启动时初始化
+     *
+     * @return 权限列表
+     */
+    public List<MinimumPermissionDTO> findAllMinimumPermission() {
+        return dao.findAllMinimumPermission();
+    }
+
+    /**
+     * 查数据库里所有的角色
+     * 一般来说是在系统启动时初始化
+     *
+     * @return 权限列表
+     */
+    public List<MinimumRoleDTO> findAllMinimumRoleDTO() {
+        return dao.findAllMinimumRoleDTO();
+    }
+
 
 
 }
