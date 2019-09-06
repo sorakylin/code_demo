@@ -22,7 +22,8 @@ import java.io.IOException;
 
 /**
  * 继承 OncePerRequestFilter , 每个请求都会走这个过滤器
- * 这个过滤器的主要作用是效验令牌,要是有效的话，就将该令牌给
+ * 这个过滤器的主要作用是效验令牌,要是有效的话，就将该令牌代表的用户(角色、权限)给查出来，然后塞进Spring Security上下文里边
+ * 以便之后的权限决策器AccessDecisionManager 可以得到这玩意进行判定
  */
 public class JwtAuthenticationTokenFilter extends OncePerRequestFilter {
 
@@ -77,5 +78,7 @@ public class JwtAuthenticationTokenFilter extends OncePerRequestFilter {
             logger.info("authenticated user " + username + ", setting security context");
             SecurityContextHolder.getContext().setAuthentication(authentication);
         }
+
+        chain.doFilter(request, response);
     }
 }

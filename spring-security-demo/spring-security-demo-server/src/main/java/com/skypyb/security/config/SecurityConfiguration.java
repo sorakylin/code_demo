@@ -48,11 +48,6 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
     @Override
     public void configure(WebSecurity web) throws Exception {
 
-
-        //允许匿名访问认证相关的接口
-//        SecurityProperties.Route route = this.securityProperties.getRoute();
-//        web.ignoring().antMatchers(HttpMethod.POST, route.getAuthPath(), route.getRefreshPath());
-
         //允许匿名访问指定的url
         SecurityProperties.Ignore ignore = this.securityProperties.getIgnore();
         ignore.asMap().entrySet().stream()
