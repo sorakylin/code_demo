@@ -1,4 +1,4 @@
-package com.skypyb.security.filter.authentication;
+package com.skypyb.security.filter.access;
 
 import com.skypyb.user.model.dto.MinimumPermissionDTO;
 import com.skypyb.user.model.dto.MinimumRoleDTO;
@@ -72,6 +72,8 @@ public class JwtInvocationSecurityMetadataSourceService
             else relationMap.get(key).addAll(value);
 
         }
+
+        logger.info("[权限数据源] 角色与权限初始化映射完毕...总权限数为:{}", relationMap.size());
     }
 
 
@@ -105,11 +107,24 @@ public class JwtInvocationSecurityMetadataSourceService
         return null;
     }
 
+    /**
+     * 这个是给SpringSecurity效验的，启动时会检查ConfigAttribute是否配置正确
+     * 可以返回null，表示不效验
+     *
+     * @return 所有的角色
+     */
     @Override
     public Collection<ConfigAttribute> getAllConfigAttributes() {
-        return null;
+        return relationMap.values().stream().flatMap(x -> x.stream()).collect(Collectors.toList());
     }
 
+    /**
+     * AbstractSecurityInterceptor 调用
+     * supports方法返回类对象是否支持校验，web项目一般使用FilterInvocation来判断，或者直接返回true。
+     *
+     * @param clazz 正在查询的类
+     * @return 如果实现可以处理指定的类，则为true
+     */
     @Override
     public boolean supports(Class<?> clazz) {
         return FilterInvocation.class.isAssignableFrom(clazz);
