@@ -11,7 +11,7 @@ CREATE TABLE `tb_permission` (
   PRIMARY KEY (`permission_id`)
 ) ENGINE=InnoDB AUTO_INCREMENT=10000 DEFAULT CHARSET=utf8 COMMENT='权限表';
 
-INSERT INTO tb_permission(permission_id, parent_id, name, en_name, url, method, description, create_time, update_time)
+INSERT INTO tb_permission(permission_id, name, en_name, url, method, description, create_time, update_time)
   VALUES (1 ,'测试管理接口','TEST_ADMIN_RESOURCE','/protectedadmin','GET','',NOW(),NOW()),
     (2,'测试普通用户接口','TEST_USER_RESOURCE','/protecteduser','GET','',NOW(),NOW());
 
