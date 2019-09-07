@@ -101,7 +101,7 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
 
     /**
      * 创建一个 {@link CreateAuthenticationTokenFilter}
-     * 其实就是一个 provider,注册到默认的AuthenticationManager里，配合其余的 provider 形成一个链条层层判断
+     * AuthenticationProcessingFilter可以拦截指定的URL，我这的实现是拦截试图创建Token令牌的
      *
      * @param httpSecurity
      * @throws Exception

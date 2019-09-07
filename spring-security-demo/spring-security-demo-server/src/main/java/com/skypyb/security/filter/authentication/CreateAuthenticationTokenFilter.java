@@ -10,6 +10,7 @@ import org.codehaus.jackson.map.ObjectMapper;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.authentication.dao.DaoAuthenticationProvider;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -28,7 +29,13 @@ import java.io.PrintWriter;
 import java.nio.charset.Charset;
 
 /**
- * 给他注册到 AuthenticationManager 里边去,请求访问这路径的时候会给自动处理的
+ * 用户登陆，会被AuthenticationProcessingFilter拦截，调用AuthenticationManager的实现。
+ * 而且AuthenticationManager会调用ProviderManager来获取用户验证信息
+ * （不同的Provider调用的服务不同，因为这些信息可以是在数据库上，可以是在LDAP服务器上，可以是xml配置文件上等）
+ * 如果验证通过后会将用户的权限信息封装一个User放到spring的全局缓存SecurityContextHolder中，以备后面访问资源时使用。
+ * <p>
+ * 我这就是最基础也是最经典的用户名密码效验
+ * 就只用默认的 AuthenticationManager 交给默认的 DaoAuthenticationProvider 处理就行了
  */
 public class CreateAuthenticationTokenFilter extends AbstractAuthenticationProcessingFilter {
 
@@ -38,7 +45,7 @@ public class CreateAuthenticationTokenFilter extends AbstractAuthenticationProce
 
     private JwtTokenUtil jwtTokenUtil;
 
-    public CreateAuthenticationTokenFilter(SecurityProperties properties,JwtTokenUtil jwtTokenUtil) {
+    public CreateAuthenticationTokenFilter(SecurityProperties properties, JwtTokenUtil jwtTokenUtil) {
         //拦截url为 authPath 的POST请求
         super(new AntPathRequestMatcher(properties.getRoute().getAuthPath(), "POST"));
         this.properties = properties;
