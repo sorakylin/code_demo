@@ -9,7 +9,7 @@ import org.springframework.security.authentication.InsufficientAuthenticationExc
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.web.FilterInvocation;
-import org.springframework.stereotype.Service;
+import org.springframework.stereotype.Component;
 
 import java.util.Collection;
 import java.util.List;
@@ -24,7 +24,7 @@ import java.util.stream.Collectors;
  * <p>
  * 我这个自定义实现的决策管理器不使用投票器
  */
-@Service
+@Component
 public class JwtAccessDecisionManager implements AccessDecisionManager {
 
     private static Logger logger = LoggerFactory.getLogger("SECURITY");

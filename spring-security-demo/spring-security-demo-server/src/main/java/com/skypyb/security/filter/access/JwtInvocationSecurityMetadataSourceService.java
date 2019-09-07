@@ -12,7 +12,7 @@ import org.springframework.security.web.FilterInvocation;
 import org.springframework.security.web.access.intercept.FilterInvocationSecurityMetadataSource;
 import org.springframework.security.web.util.matcher.AntPathRequestMatcher;
 import org.springframework.security.web.util.matcher.RequestMatcher;
-import org.springframework.stereotype.Service;
+import org.springframework.stereotype.Component;
 import org.springframework.util.CollectionUtils;
 
 import javax.annotation.PostConstruct;
@@ -24,7 +24,7 @@ import java.util.stream.Collectors;
  * 权限数据源
  * 判定用户请求的url 是否在权限表中，如果在权限表中，则返回给 decide 方法，用来判定用户是否有此权限。如果不在权限表中则放行。
  */
-@Service
+@Component
 public class JwtInvocationSecurityMetadataSourceService
         implements FilterInvocationSecurityMetadataSource {
 
@@ -88,6 +88,8 @@ public class JwtInvocationSecurityMetadataSourceService
      */
     @Override
     public Collection<ConfigAttribute> getAttributes(Object object) throws IllegalArgumentException {
+
+        if (CollectionUtils.isEmpty(relationMap)) init();
 
         final HttpServletRequest request = ((FilterInvocation) object).getHttpRequest();
 
