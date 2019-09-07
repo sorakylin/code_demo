@@ -28,7 +28,7 @@ CREATE TABLE `tb_role` (
 
 INSERT INTO tb_role(role_id, parent_id, name, en_name, description, create_time, update_time) VALUES
   (1,NULL ,'管理员','ADMIN',NULL ,NOW(),NOW()),
-  (2,NULL ,'普通用户','USER',NULL ,NOW(),NOW());
+  (2, 1 ,'普通用户','USER',NULL ,NOW(),NOW());
 
 
 CREATE TABLE `tb_role_permission` (

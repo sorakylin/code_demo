@@ -51,11 +51,15 @@ public class JwtAccessDecisionManager implements AccessDecisionManager {
         logger.info("User {} tries to access a protected resource : '{}'.",
                 authentication.getName(), resourcePath);
 
-        //用户所拥有的权限
-        List<? extends GrantedAuthority> permissions = authentication.getAuthorities().stream().collect(Collectors.toList());
+        //用户所拥有的权限 字符串形式,用于和 configAttributes匹配
+        List<String> permissions = authentication.getAuthorities()
+                .stream().map(x -> x.getAuthority())
+                .collect(Collectors.toList());
 
         //匹配,只要在{configAttributes}中有一个角色被用户拥有就可以访问资源
-        boolean result = configAttributes.stream().map(x -> x.getAttribute()).anyMatch(x -> permissions.contains(x));
+        boolean result = configAttributes.stream()
+                .map(x -> x.getAttribute())
+                .anyMatch(x -> permissions.contains(x));
 
         if (result) {
             logger.info("User {} has access to '{}' resources", authentication.getName(), resourcePath);
