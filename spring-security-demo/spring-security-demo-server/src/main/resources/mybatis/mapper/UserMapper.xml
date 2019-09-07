@@ -1,0 +1,97 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.skypyb.user.dao.UserDao">
+
+    <sql id="userPo_all_column">
+        us.user_id AS userId,
+        us.user_name AS userName,
+        us.password AS password,
+        us.create_time AS createTime,
+        us.last_login_time AS lastLoginTime,
+        us.state AS state
+    </sql>
+
+    <select id="findUserByUserName" resultType="com.skypyb.user.model.po.UserPO">
+        SELECT
+        <include refid="userPo_all_column"/>
+        FROM securitydemo.tb_user us
+        WHERE us.user_name=#{userName}
+    </select>
+
+    <select id="findUserByUserId" resultType="com.skypyb.user.model.po.UserPO">
+        SELECT
+        <include refid="userPo_all_column"/>
+        FROM securitydemo.tb_user us
+        WHERE us.user_id=#{userId}
+    </select>
+
+    <select id="findMinimumUser" resultType="com.skypyb.user.model.dto.MinimumUserDTO">
+        SELECT
+            us.user_id AS userId,
+            us.user_name AS userName,
+            us.password AS password
+        FROM securitydemo.tb_user us
+        WHERE us.user_name=#{userName}
+    </select>
+
+    <select id="findUserMinimumPermission" resultType="com.skypyb.user.model.dto.MinimumPermissionDTO">
+        SELECT
+            per.permission_id AS permissionId,
+            per.name AS name,
+            per.en_name AS enName,
+            per.url AS url,
+            per.method AS method
+        FROM
+            securitydemo.tb_user AS us
+            LEFT JOIN tb_user_role AS usr ON us.user_id = usr.user_id
+            LEFT JOIN tb_role AS ro ON ro.role_id = usr.role_id
+            LEFT JOIN tb_role_permission AS rp ON ro.role_id = rp.role_id
+            LEFT JOIN tb_permission AS per ON per.permission_id = rp.permission_id
+        WHERE us.user_id = #{userId}
+        HAVING per.permission_id > 0
+    </select>
+
+    <select id="findUserMinimumRole" resultType="com.skypyb.user.model.dto.MinimumRoleDTO">
+        SELECT
+            ro.role_id AS roleId,
+            ro.parent_id AS parentId,
+            ro.name AS name,
+            ro.en_name AS enName
+        FROM securitydemo.tb_user AS us
+            LEFT JOIN securitydemo.tb_user_role AS usr ON us.user_id = usr.user_id
+            LEFT JOIN securitydemo.tb_role AS ro ON ro.role_id = usr.role_id
+        WHERE us.user_id = #{userId}
+    </select>
+
+    <select id="findAllMinimumPermission" resultType="com.skypyb.user.model.dto.MinimumPermissionDTO">
+        SELECT
+            per.permission_id AS permissionId,
+            per.name AS name,
+            per.en_name AS enName,
+            per.url AS url,
+            per.method AS method
+        FROM
+            securitydemo.tb_permission AS per
+    </select>
+
+    <select id="findAllMinimumRoleDTO" resultType="com.skypyb.user.model.dto.MinimumRoleDTO">
+        SELECT
+            role.role_id AS roleId,
+            role.parent_id AS parentId,
+            role.name AS name,
+            role.en_name AS enName
+        FROM securitydemo.tb_role role
+    </select>
+    <select id="findAllRolePermissionRelation" resultType="com.skypyb.user.model.dto.RolePermissionPO">
+        SELECT
+            trp.id AS id,
+            trp.role_id AS roleId,
+            trp.permission_id AS permissionId
+        FROM securitydemo.tb_role_permission trp
+    </select>
+
+
+</mapper>

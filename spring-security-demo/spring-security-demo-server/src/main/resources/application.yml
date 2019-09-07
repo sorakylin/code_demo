@@ -1,0 +1,45 @@
+spring:
+  application:
+    name: security-demo
+  jackson:
+      serialization:
+        indent_output: true
+  datasource:
+    type: com.zaxxer.hikari.HikariDataSource
+    driver-class-name: com.mysql.cj.jdbc.Driver
+    url: jdbc:mysql://192.168.1.14:3306/securitydemo?useUnicode=true&characterEncoding=utf-8&useSSL=false&serverTimezone=Asia/Shanghai
+    username: root
+    password: 614
+    hikari:
+      minimum-idle: 5
+      idle-timeout: 600000
+      maximum-pool-size: 10
+      auto-commit: true
+      pool-name: MyHikariCP
+      max-lifetime: 1800000
+      connection-timeout: 30000
+      connection-test-query: SELECT 1
+
+mybatis:
+  mapper-locations: classpath:mybatis/mapper/*.xml
+
+#设置服务器端口号
+server:
+  port: 8080
+
+
+# SecurityProperties 配置
+demo:
+  security:
+    header: Authorization #请求头部属性名
+    signing_key: pyb068@gmail.com #JWT 签名秘钥
+    token_expiration: 108000000 #token失效时间 30*60*60*1000
+    route:
+      auth_path: /tk/auth
+      refresh_path: /tk/refresh
+    ignore:
+      get:
+        - /test/**
+        - /ignore/testget
+      post:
+        - /ignore/testpost
