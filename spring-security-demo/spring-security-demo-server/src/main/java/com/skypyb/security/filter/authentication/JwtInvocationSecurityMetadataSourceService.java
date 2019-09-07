@@ -19,22 +19,22 @@ import javax.annotation.PostConstruct;
 import javax.servlet.http.HttpServletRequest;
 import java.util.*;
 import java.util.stream.Collectors;
-import java.util.stream.Stream;
 
 /**
  * 权限数据源
  * 判定用户请求的url 是否在权限表中，如果在权限表中，则返回给 decide 方法，用来判定用户是否有此权限。如果不在权限表中则放行。
  */
 @Service
-public class JwtInvocationSecurityMetadataSourceService implements FilterInvocationSecurityMetadataSource {
+public class JwtInvocationSecurityMetadataSourceService
+        implements FilterInvocationSecurityMetadataSource {
 
     private static Logger logger = LoggerFactory.getLogger("SECURITY");
 
     /*
         key 是url+method ,value 是对应url资源的角色列表
-        即：这个url对应了哪一些权限可以访问
+        即：这个url对应了哪一些角色可以访问
     */
-    private Map<RequestMatcher, Collection<ConfigAttribute>> requestMap = new LinkedHashMap<>();
+    private Map<RequestMatcher, Collection<ConfigAttribute>> relationMap = new LinkedHashMap<>();
 
 
     @Autowired
@@ -48,13 +48,30 @@ public class JwtInvocationSecurityMetadataSourceService implements FilterInvocat
 
         //所有权限(接口)
         List<MinimumPermissionDTO> permissions = userService.findAllMinimumPermission();
-        List<AntPathRequestMatcher> matchers = permissions.stream()
-                .map(x -> new AntPathRequestMatcher(x.getUrl(), x.getMethod()))
-                .collect(Collectors.toList());
 
         //所有角色
         List<MinimumRoleDTO> roles = userService.findAllMinimumRoleDTO();
 
+        //权限和角色的关联
+        Map<Long, Set<Long>> relation = userService.findAllPermissionRoleRelation();
+
+        //遍历权限，为权限生成可访问的角色集合
+        for (MinimumPermissionDTO permission : permissions) {
+            AntPathRequestMatcher key = new AntPathRequestMatcher(permission.getUrl(), permission.getMethod());
+
+            //获取拥有此权限的角色id
+            Set<Long> valuesId = relation.get(permission.getPermissionId());
+
+            Set<ConfigAttribute> value = roles.stream()
+                    .filter(x -> valuesId.contains(x.getRoleId()))
+                    .map(x -> new SecurityConfig(x.getEnName()))
+                    .collect(Collectors.toSet());
+
+            //将集合放入map中
+            if (Objects.isNull(relationMap.get(key))) relationMap.put(key, value);
+            else relationMap.get(key).addAll(value);
+
+        }
     }
 
 
@@ -73,12 +90,12 @@ public class JwtInvocationSecurityMetadataSourceService implements FilterInvocat
         final HttpServletRequest request = ((FilterInvocation) object).getHttpRequest();
 
         //所有与该请求匹配的URL
-        List<RequestMatcher> matchUrl = requestMap.keySet().stream()
+        List<RequestMatcher> matchUrl = relationMap.keySet().stream()
                 .filter(matcher -> matcher.matches(request))
                 .collect(Collectors.toList());
 
         //通过所有 URL(权限) 找到需要的角色集
-        List<ConfigAttribute> rolesResult = matchUrl.stream().map(requestMap::get)
+        List<ConfigAttribute> rolesResult = matchUrl.stream().map(relationMap::get)
                 .filter(roles -> !CollectionUtils.isEmpty(roles))
                 .flatMap(roles -> roles.stream())
                 .collect(Collectors.toList());

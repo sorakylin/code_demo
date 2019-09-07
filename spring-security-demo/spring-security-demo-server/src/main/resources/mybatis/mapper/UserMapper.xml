@@ -73,5 +73,12 @@
             role.en_name AS enName
         FROM securitydemo.tb_role role
     </select>
+    <select id="findAllRolePermissionRelation" resultType="com.skypyb.user.model.dto.RolePermissionPO">
+        SELECT
+            trp.id AS id,
+            trp.role_id AS roleId,
+            trp.permission_id AS permissionId
+        FROM securitydemo.tb_role_permission trp
+    </select>
 
 </mapper>

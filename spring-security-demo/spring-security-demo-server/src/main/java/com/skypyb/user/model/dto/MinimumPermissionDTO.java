@@ -1,6 +1,7 @@
 package com.skypyb.user.model.dto;
 
 import java.io.Serializable;
+import java.util.Objects;
 
 //基本的权限信息
 public class MinimumPermissionDTO implements Serializable {
@@ -49,5 +50,19 @@ public class MinimumPermissionDTO implements Serializable {
 
     public void setMethod(String method) {
         this.method = method;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        MinimumPermissionDTO that = (MinimumPermissionDTO) o;
+        return Objects.equals(permissionId, that.permissionId);
+    }
+
+    @Override
+    public int hashCode() {
+
+        return Objects.hash(permissionId);
     }
 }

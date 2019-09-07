@@ -3,6 +3,7 @@ package com.skypyb.user.dao;
 import com.skypyb.user.model.dto.MinimumPermissionDTO;
 import com.skypyb.user.model.dto.MinimumRoleDTO;
 import com.skypyb.user.model.dto.MinimumUserDTO;
+import com.skypyb.user.model.dto.RolePermissionPO;
 import com.skypyb.user.model.po.UserPO;
 import org.apache.ibatis.annotations.Param;
 
@@ -22,4 +23,6 @@ public interface UserDao {
     List<MinimumPermissionDTO> findAllMinimumPermission();
 
     List<MinimumRoleDTO> findAllMinimumRoleDTO();
+
+    List<RolePermissionPO> findAllRolePermissionRelation();
 }
