@@ -18,13 +18,11 @@ public class MethodProtectedRestController {
      * 'ROLE_' prefix on all role names. So 'ADMIN' here is actually stored as 'ROLE_ADMIN' in database!
      **/
     @RequestMapping(value = "/protectedadmin", method = RequestMethod.GET)
-    @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<?> getProtectedAdmin() {
         return ResponseEntity.ok("Greetings from admin protected method!");
     }
 
     @RequestMapping(value = "/protecteduser", method = RequestMethod.GET)
-    @PreAuthorize("hasRole('USER')")
     public ResponseEntity<?> getProtectedUser() {
         return ResponseEntity.ok("Greetings from user protected method!");
     }

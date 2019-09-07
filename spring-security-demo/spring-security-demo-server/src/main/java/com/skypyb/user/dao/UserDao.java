@@ -25,4 +25,6 @@ public interface UserDao {
     List<MinimumRoleDTO> findAllMinimumRoleDTO();
 
     List<RolePermissionPO> findAllRolePermissionRelation();
+
+    List<MinimumRoleDTO> findUserMinimumRole(Long userId);
 }

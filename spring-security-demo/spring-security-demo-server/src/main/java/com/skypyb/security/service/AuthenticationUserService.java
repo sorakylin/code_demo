@@ -3,6 +3,7 @@ package com.skypyb.security.service;
 import com.skypyb.security.exception.SecurityAuthException;
 import com.skypyb.security.model.dto.AuthenticationUser;
 import com.skypyb.user.model.dto.MinimumPermissionDTO;
+import com.skypyb.user.model.dto.MinimumRoleDTO;
 import com.skypyb.user.model.dto.MinimumUserDTO;
 import com.skypyb.user.service.UserService;
 import com.zaxxer.hikari.util.FastList;
@@ -38,12 +39,13 @@ public class AuthenticationUserService implements UserDetailsService {
         MinimumUserDTO user = userService.findMinimumUser(username)
                 .orElseThrow(() -> new SecurityAuthException("User not found!"));
 
-        List<MinimumPermissionDTO> permission = userService.findUserMinimumPermission(user.getUserId());
+        List<MinimumRoleDTO> roles = userService.findUserMinimumRole(user.getUserId());
 
-        ArrayList<SimpleGrantedAuthority> authorities = permission
+
+        ArrayList<SimpleGrantedAuthority> authorities = roles
                 .stream()
                 .map(per -> new SimpleGrantedAuthority(per.getEnName()))
-                .collect(Collectors.toCollection(() -> new ArrayList(permission.size())));
+                .collect(Collectors.toCollection(() -> new ArrayList(roles.size())));
 
         return AuthenticationUser.from(user).setAuthorities(authorities);
     }

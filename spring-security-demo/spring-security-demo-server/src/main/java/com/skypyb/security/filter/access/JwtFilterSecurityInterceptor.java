@@ -1,6 +1,7 @@
 package com.skypyb.security.filter.access;
 
-import org.springframework.beans.factory.InitializingBean;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.access.SecurityMetadataSource;
 import org.springframework.security.access.intercept.AbstractSecurityInterceptor;
@@ -19,6 +20,8 @@ import java.io.IOException;
 @Component//在spring容器托管的AbstractSecurityInterceptor的bean，都会自动加入到servlet的filter chain，不用在websecurityconfig配置
 public class JwtFilterSecurityInterceptor extends AbstractSecurityInterceptor
         implements Filter {
+
+    private static Logger logger = LoggerFactory.getLogger("SECURITY");
 
     @Autowired
     private JwtAccessDecisionManager accessDecisionManager;
@@ -51,6 +54,7 @@ public class JwtFilterSecurityInterceptor extends AbstractSecurityInterceptor
     @PostConstruct
     private void springInit() {
         super.setAccessDecisionManager(accessDecisionManager);
+        logger.info("Interceptor --> JwtFilterSecurityInterceptor add to servlet filter chain");
     }
 
 

@@ -4,6 +4,7 @@ package com.skypyb.security.filter.access;
 import com.skypyb.security.config.SecurityProperties;
 import com.skypyb.security.util.JwtTokenUtil;
 import io.jsonwebtoken.ExpiredJwtException;
+import io.jsonwebtoken.MalformedJwtException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -59,9 +60,11 @@ public class JwtAuthenticationTokenFilter extends OncePerRequestFilter {
         try {
             username = jwtTokenUtil.getUsernameFromToken(token);
         } catch (IllegalArgumentException e) {
-            logger.error("an error occured during getting username from token", e);
+            logger.error("An error occured during getting username from token", e);
         } catch (ExpiredJwtException e) {
-            logger.warn("the token is expired and not valid anymore", e);
+            logger.warn("The token is expired and not valid anymore", e);
+        } catch (MalformedJwtException e) {
+            logger.info(" Unable to read JSON", e);
         }
 
         if (StringUtils.isEmpty(username) || SecurityContextHolder.getContext().getAuthentication() != null) {

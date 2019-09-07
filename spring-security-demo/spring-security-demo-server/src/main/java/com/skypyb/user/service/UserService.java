@@ -39,6 +39,11 @@ public class UserService {
         return dao.findUserMinimumPermission(userId);
     }
 
+    public List<MinimumRoleDTO> findUserMinimumRole(Long userId) {
+
+        return dao.findUserMinimumRole(userId);
+    }
+
     /**
      * 查数据库里所有的权限
      * 一般来说是在系统启动时初始化
