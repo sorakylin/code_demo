@@ -4,6 +4,7 @@ package com.skypyb.security.config;
 import com.skypyb.security.filter.AuthenticationFailEntryPoint;
 import com.skypyb.security.filter.access.JwtAuthenticationTokenFilter;
 import com.skypyb.security.filter.authentication.CreateAuthenticationTokenFilter;
+import com.skypyb.security.filter.authentication.OptionsRequestFilter;
 import com.skypyb.security.service.AuthenticationUserService;
 import com.skypyb.security.util.JwtTokenUtil;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -82,14 +83,17 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
                 //支持所有源的访问
                 new Header("Access-control-Allow-Origin", "*"),
                 //使ajax请求能够取到header中的jwt token信息
-                new Header("Access-Control-Expose-Headers", "Authorization")
+                new Header("Access-Control-Expose-Headers", securityProperties.getHeader())
         };
 
         //跨域配置，支持跨域
         httpSecurity.cors()
                 .and()   //添加header设置，支持跨域和ajax请求
                 .headers()
-                .addHeaderWriter(new StaticHeadersWriter(Arrays.asList(headers)));
+                .addHeaderWriter(new StaticHeadersWriter(Arrays.asList(headers)))
+                .and()
+                //拦截OPTIONS请求，直接返回header
+                .addFilterAfter(new OptionsRequestFilter(), CorsFilter.class);
 
         //设置入口点异常处理
         httpSecurity.exceptionHandling().authenticationEntryPoint(new AuthenticationFailEntryPoint());
