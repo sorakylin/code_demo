@@ -1,7 +1,8 @@
-个人平日学习java各大框架、中间件集成之类的代码演示
+使用各类主流框架、以及中间件整合之类的代码演示,注释详细
 ---
 
 **演示列表**
+- [spring-security-demo](https://github.com/skypyb/code_demo/tree/master/spring-security-demo)：(内附sql脚本) 标准的RBAC权限设计，基于动态查询数据库的权限判定 (  *以接口为粒度，即 Request URL+Request Method*  )基于JWT的认证授权流程，使用SpringBoot+SpringSecurity+MyBatis+jjwt  
 - [dubbo-springboot](https://github.com/skypyb/code_demo/tree/master/dubbo-springboot)：SpringBoot整合Dubbo的演示，服务治理使用Zookeeper  
 - [sc-demo-microservice](https://github.com/skypyb/code_demo/tree/master/sc-demo-microservice)：SpringCloudNetfilx全家桶,包含Zuul,Eureka,Ribbon,Hystrix,Feign等组件的使用
 - [ssm-backstage](https://github.com/skypyb/code_demo/tree/master/ssm-backstage)：Spring+SpringMVC+Mybatis注解式开发的简易后台项目,Mybatis实现一对一/一对多映射,前台使用Thymeleaf+Layui
