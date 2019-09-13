@@ -4,7 +4,8 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-@RestController("/provider")
+@RequestMapping("/provider")
+@RestController
 public class NacosProviderController {
 
 
