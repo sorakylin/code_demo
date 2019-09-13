@@ -1,13 +1,13 @@
 spring:
   application:
-    name: sc-demo-alibaba-provider
+    name: sc-demo-alibaba-consumer
   cloud:
     nacos:
       discovery:
         server-addr: 192.168.1.14:8848 #注册进 nacos
 
 server:
-  port: 8080
+  port: 8081
 
 management:
   endpoints:
