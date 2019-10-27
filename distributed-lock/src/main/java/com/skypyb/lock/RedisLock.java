@@ -1,5 +1,6 @@
 package com.skypyb.lock;
 
+import com.sun.org.apache.bcel.internal.generic.IF_ACMPEQ;
 import org.springframework.data.redis.core.RedisCallback;
 import org.springframework.data.redis.core.RedisTemplate;
 import redis.clients.jedis.Jedis;
@@ -15,37 +16,23 @@ public class RedisLock implements DistributedLock {
     private static final String SET_WITH_EXPIRE_TIME = "EX";
     private static final String RELEASE_LOCK_SCRIPT = "if redis.call('get', KEYS[1]) == ARGV[1] then return redis.call('del', KEYS[1]) else return 0 end";
 
-    private RedisTemplate redisTemplate;
+    private final RedisTemplate redisTemplate;
 
     //加锁时使用的key
-    private String key;
+    private final String key;
     //身份证明
-    private String identification;
+    private final String identification;
     //过期时间，单位秒
-    private long expire = -1;
+    private final long expire;
     //获取锁失败重试的间隔 单位毫秒
-    private long interval = TimeUnit.MILLISECONDS.toMillis(50);
+    private final long interval = TimeUnit.MICROSECONDS.toMillis(50);
 
-
-    private RedisCallback<Boolean> lockCallback = redisConnection -> {
-        Jedis jedis = (Jedis) redisConnection.getNativeConnection();
-        String result = jedis.set(key, identification, SET_IF_NOT_EXIST, SET_WITH_EXPIRE_TIME, expire);
-
-        return LOCK_SUCCESS.equals(result);
-    };
-
-    private RedisCallback<Boolean> releaseLockCallback = redisConnection -> {
-        Jedis jedis = (Jedis) redisConnection.getNativeConnection();
-        Object result = jedis.eval(RELEASE_LOCK_SCRIPT, Collections.singletonList(key),
-                Collections.singletonList(identification));
-
-        return RELEASE_SUCCESS.equals(result);
-    };
 
     protected RedisLock(RedisTemplate redisTemplate) {
         this.redisTemplate = redisTemplate;
         this.key = UUID.randomUUID().toString();
         this.identification = UUID.randomUUID().toString();
+        this.expire = -1;
     }
 
     protected RedisLock(RedisTemplate redisTemplate, String key, String identification, long expire) {
@@ -70,6 +57,13 @@ public class RedisLock implements DistributedLock {
      */
     @Override
     public boolean tryLock() {
+        RedisCallback<Boolean> lockCallback = redisConnection -> {
+            Jedis jedis = (Jedis) redisConnection.getNativeConnection();
+            String result = jedis.set(key, identification, SET_IF_NOT_EXIST, SET_WITH_EXPIRE_TIME, expire);
+
+            return LOCK_SUCCESS.equals(result);
+        };
+
         return redisTemplate.execute(lockCallback) == Boolean.TRUE;
     }
 
@@ -87,13 +81,21 @@ public class RedisLock implements DistributedLock {
         return tryLock();
     }
 
-
+    @Override
     public boolean unlock() {
+        RedisCallback<Boolean> releaseLockCallback = redisConnection -> {
+            Jedis jedis = (Jedis) redisConnection.getNativeConnection();
+            Object result = jedis.eval(RELEASE_LOCK_SCRIPT, Collections.singletonList(key),
+                    Collections.singletonList(identification));
+
+            return RELEASE_SUCCESS.equals(result);
+        };
+
         return redisTemplate.execute(releaseLockCallback) == Boolean.TRUE;
     }
 
     private boolean waitLockInterval() throws InterruptedException {
-        TimeUnit.MILLISECONDS.sleep(interval);
+        if (interval > 0) TimeUnit.MILLISECONDS.sleep(interval);
         return false;
     }
 
