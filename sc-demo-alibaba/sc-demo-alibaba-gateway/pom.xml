@@ -78,7 +78,7 @@
                 <groupId>org.springframework.boot</groupId>
                 <artifactId>spring-boot-maven-plugin</artifactId>
                 <configuration>
-                    <mainClass>com.skypyb.provider.NacosConsumerApplication</mainClass>
+                    <mainClass>com.skypyb.gateway.GatewayApplication</mainClass>
                 </configuration>
             </plugin>
         </plugins>
