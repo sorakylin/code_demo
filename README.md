@@ -1,7 +1,9 @@
 使用各类主流框架、以及中间件整合之类的代码演示,注释详细
 ---
+[![License](https://img.shields.io/badge/License-MIT-red.svg)](https://mit-license.org/)
 
-**演示列表**
+### Demo 演示列表
+- [sc-demo-alibaba](https://github.com/skypyb/code_demo/tree/master/sc-demo-alibaba)：Spring Cloud Alibaba全家桶的示例，服务治理、熔断、通信、网关、限流、鉴权等
 - [spring-security-demo](https://github.com/skypyb/code_demo/tree/master/spring-security-demo)：(内附sql脚本) 标准的RBAC权限设计，基于动态查询数据库的权限判定 (  *以接口为粒度，即 Request URL+Request Method*  )基于JWT的认证授权流程，使用SpringBoot+SpringSecurity+MyBatis+jjwt  
 - [dubbo-springboot](https://github.com/skypyb/code_demo/tree/master/dubbo-springboot)：SpringBoot整合Dubbo的演示，服务治理使用Zookeeper  
 - [sc-demo-microservice](https://github.com/skypyb/code_demo/tree/master/sc-demo-microservice)：SpringCloudNetfilx全家桶,包含Zuul,Eureka,Ribbon,Hystrix,Feign等组件的使用
