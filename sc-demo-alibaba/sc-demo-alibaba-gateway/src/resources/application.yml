@@ -1,0 +1,65 @@
+spring:
+  application:
+    # 应用名称
+    name: sc-demo-alibaba-gateway
+  cloud:
+    nacos:
+      discovery:
+        server-addr: 192.168.3.105:8848 #注册进nacos
+    # 使用 Sentinel 作为熔断器
+    sentinel:
+      transport:
+        port: 18102
+        dashboard: 192.168.3.105:8858
+    # 路由网关配置
+    gateway:
+      # 这里是设置与服务注册发现组件结合，这样可以采用服务名的路由策略
+      discovery:
+        locator:
+          enabled: true
+      # 配置路由规则
+      routes:
+        - id: ROUTER#sc-demo-alibaba-consumer #这个是路由ID，需要保证在所有路由定义中唯一，值随便写就是了
+          # 采用 LoadBalanceClient 方式请求，以 lb:// 开头，后面的是注册在 Nacos 上的服务名
+          uri: lb://sc-demo-alibaba-consumer
+          predicates:
+            # Method ，这里是匹配 GET 和 POST 请求
+            - Method=GET,POST
+          filters:
+            - name: RequestRateLimiter
+              args:
+                redis-rate-limiter.burstCapacity: 20
+                redis-rate-limiter.replenishRate: 5
+                key-resolver: '#{@ipKeyResolver}'
+        - id: ROUTER#sc-demo-alibaba-provider
+          uri: lb://sc-demo-alibaba-provider
+          predicates:
+            - Method=GET,POST
+  #Redis配置
+  redis:
+    host: 192.168.3.105
+    port: 6379
+    #Redis连接池配置
+    jedis:
+      pool:
+        min-idle: 0
+        max-idle: 8
+        max-active: 8
+        max-wait: -1ms
+server:
+  port: 8888
+
+feign:
+  sentinel:
+    enabled: true
+
+management:
+  endpoints:
+    web:
+      exposure:
+        include: "*"
+
+# 配置日志级别，方别调试
+logging:
+  level:
+    org.springframework.cloud.gateway: debug

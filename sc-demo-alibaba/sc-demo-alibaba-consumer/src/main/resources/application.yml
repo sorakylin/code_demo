@@ -1,0 +1,24 @@
+spring:
+  application:
+    name: sc-demo-alibaba-consumer
+  cloud:
+    nacos:
+      discovery:
+        server-addr: 192.168.3.105:8848 #注册进 nacos
+    sentinel:
+          transport:
+            port: 18081 #这个端口的意思是自己这个服务开个端口和 sentinel 控制台交互
+            dashboard: 192.168.3.105:8858 # sentinel 控制台的端口
+
+server:
+  port: 8081
+
+feign:
+  sentinel:
+    enabled: true
+
+management:
+  endpoints:
+    web:
+      exposure:
+        include: "*"

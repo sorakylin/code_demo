@@ -1,0 +1,16 @@
+spring:
+  application:
+    name: sc-demo-alibaba-provider
+  cloud:
+    nacos:
+      discovery:
+        server-addr: 192.168.3.105:8848 #注册进 nacos
+
+server:
+  port: 8080
+
+management:
+  endpoints:
+    web:
+      exposure:
+        include: "*"
