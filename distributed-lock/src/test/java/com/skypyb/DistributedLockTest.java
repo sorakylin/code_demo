@@ -10,7 +10,6 @@ import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.test.context.junit4.SpringRunner;
 
 import java.lang.reflect.Constructor;
-import java.lang.reflect.InvocationTargetException;
 
 @RunWith(SpringRunner.class)
 @SpringBootTest(classes = DemoApplication.class)
@@ -38,13 +37,19 @@ public class DistributedLockTest {
             System.out.println(Thread.currentThread().getName() + "释放锁结果:" + unlock);
         };
 
+        Thread[] threads = new Thread[10];
+
         for (int i = 0; i < 10; i++) {
-            Thread thread = new Thread(runnable);
-            System.out.println(thread.getName());
-            thread.start();
+            threads[i] = new Thread(runnable);
+            System.out.println(threads[i].getName());
+            threads[i].start();
         }
         System.out.println("---------------");
 
+
+        for (Thread thread : threads) {
+            thread.join();
+        }
     }
 
 }

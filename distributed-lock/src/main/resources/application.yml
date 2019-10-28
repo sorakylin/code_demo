@@ -8,7 +8,7 @@ spring:
       charset: UTF-8
 #Redis配置
   redis:
-    host: 192.168.8.113
+    host: 192.168.194.132
     port: 6379
     #Redis连接池配置
     jedis:
