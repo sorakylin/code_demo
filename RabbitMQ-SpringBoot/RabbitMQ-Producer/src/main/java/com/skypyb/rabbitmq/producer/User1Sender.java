@@ -22,7 +22,7 @@ public class User1Sender {
         /**
          *
          * @param correlationData   消息唯一ID
-         * @param ack           确认消息是否被消费,true是已被消费,false为没被消费/投递失败/异常/...
+         * @param ack           确认消息是否被MQBroker接收,true是已被接收,false为没被接收/投递失败/异常/...
          * @param cause
          */
         @Override

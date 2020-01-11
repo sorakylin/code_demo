@@ -2,6 +2,8 @@ package com.skypyb.rabbitmq.controller;
 
 import com.rabbitmq.client.Channel;
 import com.skypyb.rabbitmq.config.RabbitBindConfig;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.amqp.rabbit.annotation.RabbitHandler;
 import org.springframework.amqp.rabbit.annotation.RabbitListener;
 import org.springframework.amqp.support.AmqpHeaders;
@@ -16,19 +18,19 @@ import java.util.Map;
 @Component
 public class DeadReceiver {
 
+    private Logger logger = LoggerFactory.getLogger(DeadReceiver.class);
 
     @RabbitHandler
     public void onUser1Message(@Payload String messsage,
                                @Headers Map<String, Object> headers,
                                Channel channel) throws IOException {
-        //消费者操作
-        System.out.println("死信队列接收消息: " + messsage);
 
-        //delivery tag可以从
+        logger.info("死信队列接收消息: {}", messsage);
+
+        //delivery tag可以从headers中get出来
         Long deliveryTag = (Long) headers.get(AmqpHeaders.DELIVERY_TAG);
 
         try {
-
             channel.basicAck(deliveryTag, false);
         } catch (Exception e) {
             System.err.println(e.getMessage());
