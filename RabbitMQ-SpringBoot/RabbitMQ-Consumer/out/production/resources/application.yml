@@ -10,14 +10,9 @@ spring:
       #前端页面传Date值时格式化
       date-format: yyyy-MM-dd HH:mm:ss
       time-zone: GMT+8
-  datasource:
-      driver-class-name: com.mysql.cj.jdbc.Driver
-      url: jdbc:mysql://192.168.8.113:3306/mysql?serverTimezone=Asia/Shanghai
-      username: root
-      password: 614
   #rabbitmq基本配置
   rabbitmq:
-    addresses: 192.168.8.113:5672
+    addresses: 192.168.194.132:5672
     username: admin
     password: 614
     virtual-host: /
@@ -34,22 +29,6 @@ spring:
         #限流，在此消费端同一时间只有一条消息消费
         prefetch: 1
 
-
-#Redis配置
-  redis:
-    host: 192.168.8.113
-    port: 6379
-    #Redis连接池配置
-    jedis:
-      pool:
-        min-idle: 0
-        max-idle: 8
-        max-active: 8
-        max-wait: -1ms
-
-
-
-niubi: userService
 
 
 

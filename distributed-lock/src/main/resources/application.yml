@@ -1,0 +1,23 @@
+server:
+  port: 8080
+  servlet:
+    context-path: /
+spring:
+  http:
+    encoding:
+      charset: UTF-8
+#Redis配置
+  redis:
+    host: 192.168.194.132
+    port: 6379
+    #Redis连接池配置
+    jedis:
+      pool:
+        min-idle: 0
+        max-idle: 8
+        max-active: 8
+        max-wait: -1ms
+
+
+
+

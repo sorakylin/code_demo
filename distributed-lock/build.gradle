@@ -1,0 +1,59 @@
+//def springBootVersion = rootProject.ext.springBootVersion
+
+
+
+buildscript {
+    ext {
+        bootGroupName = 'org.springframework.boot'
+        bootVersion = '2.0.4.RELEASE'
+    }
+    repositories {
+        mavenLocal()
+        maven { url 'http://maven.aliyun.com/nexus/content/groups/public/' }
+        mavenCentral()
+    }
+    dependencies {
+        classpath("org.springframework.boot:spring-boot-gradle-plugin:${bootVersion}")
+    }
+}
+
+
+apply plugin: 'java'
+apply plugin: 'idea'
+apply plugin: 'org.springframework.boot'
+
+jar {
+    baseName = 'distributed-lock'
+    version = '0.0.1-SNAPSHOT'
+}
+
+sourceCompatibility = 1.8
+targetCompatibility = 1.8
+
+allprojects {
+    repositories {
+        mavenLocal()
+        maven { url 'http://maven.aliyun.com/nexus/content/groups/public/' }
+        mavenCentral()
+    }
+}
+
+dependencies {
+    compile fileTree(dir: 'libs', include: ['*.jar'])
+    testCompile(
+            group: bootGroupName,
+            name: 'spring-boot-starter-test',
+            version: bootVersion
+    )
+    compile(
+            [group: bootGroupName, name: 'spring-boot-starter-data-redis', version: bootVersion],
+            [group: bootGroupName, name: 'spring-boot-starter-web', version: bootVersion],
+            [group: 'com.101tec', name: 'zkclient', version: '0.11'],
+            [group: 'redis.clients', name: 'jedis',version: '2.9.0'],
+    )
+}
+
+
+tasks.withType(JavaCompile) {
+    options.encoding = "UTF-8"
+}
