@@ -14,18 +14,20 @@ import org.springframework.stereotype.Component;
 import java.io.IOException;
 import java.util.Map;
 
-@RabbitListener(queues = {RabbitBindConfig.SKYPYB_DEAD_QUEUE})
+//
+//containerFactory 监听器工厂设置，指定一个被Spring管理的监听器工厂
+@RabbitListener(queues = {RabbitBindConfig.SKYPYB_DEAD_QUEUE}, containerFactory = "prefetchCount5Container")
 @Component
 public class DeadReceiver {
 
     private Logger logger = LoggerFactory.getLogger(DeadReceiver.class);
 
     @RabbitHandler
-    public void onUser1Message(@Payload String messsage,
-                               @Headers Map<String, Object> headers,
-                               Channel channel) throws IOException {
+    public void onDeadMessage(@Payload String message,
+                              @Headers Map<String, Object> headers,
+                              Channel channel) throws IOException {
 
-        logger.info("死信队列接收消息: {}", messsage);
+        logger.info("死信队列接收消息: {}", message);
 
         //delivery tag可以从headers中get出来
         Long deliveryTag = (Long) headers.get(AmqpHeaders.DELIVERY_TAG);
