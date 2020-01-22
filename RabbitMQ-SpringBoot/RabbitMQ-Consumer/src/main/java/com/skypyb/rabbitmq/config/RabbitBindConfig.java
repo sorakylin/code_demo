@@ -1,9 +1,6 @@
 package com.skypyb.rabbitmq.config;
 
-import org.springframework.amqp.core.Binding;
-import org.springframework.amqp.core.BindingBuilder;
-import org.springframework.amqp.core.DirectExchange;
-import org.springframework.amqp.core.Queue;
+import org.springframework.amqp.core.*;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
@@ -19,12 +16,15 @@ public class RabbitBindConfig {
 
     public final static String SKYPYB_ORDINARY_EXCHANGE = "skypyb-ordinary-exchange";
     public final static String SKYPYB_DEAD_EXCHANGE = "skypyb-dead-exchange";
+    public final static String SKYPYB_DELAY_EXCHANGE = "skypyb-delay-exchange";
 
     public final static String SKYPYB_ORDINARY_QUEUE_1 = "skypyb-ordinary-queue";
     public final static String SKYPYB_DEAD_QUEUE = "skypyb-dead-queue";
+    public final static String SKYPYB_DELAY_QUEUE = "skypyb-delay-queue";
 
     public final static String SKYPYB_ORDINARY_KEY = "skypyb.key.ordinary.one";
     public final static String SKYPYB_DEAD_KEY = "skypyb.key.dead";
+    public final static String SKYPYB_DELAY_KEY = "skypyb.key.delay";
 
 
     @Bean
@@ -35,6 +35,15 @@ public class RabbitBindConfig {
     @Bean
     public DirectExchange deadExchange() {
         return new DirectExchange(SKYPYB_DEAD_EXCHANGE, false, true);
+    }
+
+
+    @Bean
+    public CustomExchange delayExchange() {
+        Map<String, Object> args = new HashMap<>();
+        args.put("x-delayed-type", "direct");
+        //自定义交换机
+        return new CustomExchange(SKYPYB_DELAY_EXCHANGE, "x-delayed-message", false, true, args);
     }
 
     @Bean
@@ -56,6 +65,12 @@ public class RabbitBindConfig {
     }
 
     @Bean
+    public Queue delayQueue() {
+        return new Queue(SKYPYB_DELAY_QUEUE, false, false, true);
+    }
+
+
+    @Bean
     public Binding bindingOrdinaryExchangeAndQueue() {
         return BindingBuilder.bind(ordinaryQueue()).to(ordinaryExchange()).with(SKYPYB_ORDINARY_KEY);
     }
@@ -63,5 +78,10 @@ public class RabbitBindConfig {
     @Bean
     public Binding bindingDeadExchangeAndQueue() {
         return BindingBuilder.bind(deadQueue()).to(deadExchange()).with(SKYPYB_DEAD_KEY);
+    }
+
+    @Bean
+    public Binding bindingDelayExchangeAndQueue() {
+        return BindingBuilder.bind(delayQueue()).to(delayExchange()).with(SKYPYB_DELAY_KEY).noargs();
     }
 }

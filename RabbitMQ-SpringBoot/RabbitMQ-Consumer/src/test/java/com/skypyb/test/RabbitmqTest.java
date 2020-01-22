@@ -38,4 +38,26 @@ public class RabbitmqTest {
         logger.info("-----消息发送完毕-----");
     }
 
+    @Test
+    public void testDelay() {
+
+        rabbitTemplate.convertAndSend(RabbitBindConfig.SKYPYB_DELAY_EXCHANGE,
+                RabbitBindConfig.SKYPYB_DELAY_KEY, "消息体-5s",
+                (msg) -> {
+                    msg.getMessageProperties().setDelay(5000);
+                    return msg;
+                });
+
+        rabbitTemplate.convertAndSend(
+                RabbitBindConfig.SKYPYB_DELAY_EXCHANGE,
+                RabbitBindConfig.SKYPYB_DELAY_KEY,
+                "消息体-3s",
+                (msg) -> {
+                    msg.getMessageProperties().setDelay(3000);
+                    return msg;
+                });
+
+        logger.info("-----消息发送完毕-----");
+    }
+
 }
