@@ -1,0 +1,56 @@
+buildscript {
+    ext {
+        springBootVersion = '2.2.5.RELEASE'
+    }
+
+    repositories {
+        repositories {
+            mavenLocal()
+            maven { url = 'https://maven.aliyun.com/repository/jcenter' }
+            maven { url = 'https://oss.sonatype.org/content/repositories/snapshots/' }
+            maven { url = "https://plugins.gradle.org/m2/" }
+            mavenCentral()
+        }
+    }
+    dependencies {
+        classpath("org.springframework.boot:spring-boot-gradle-plugin:${springBootVersion}")
+    }
+}
+
+apply plugin: 'java'
+apply plugin: 'idea'
+apply plugin: 'org.springframework.boot'
+
+
+
+sourceCompatibility = 1.8
+targetCompatibility = 1.8
+
+allprojects {
+    repositories {
+        mavenLocal()
+        maven { url 'http://maven.aliyun.com/nexus/content/groups/public/' }
+        mavenCentral()
+    }
+
+    tasks.withType(JavaCompile) {
+        options.encoding = "UTF-8"
+    }
+}
+
+
+dependencies {
+    testCompile('org.springframework.boot:spring-boot-starter-test:2.2.5.RELEASE')
+    compile ('org.apache.shardingsphere:sharding-jdbc-spring-boot-starter:4.1.0')
+    compile('mysql:mysql-connector-java:5.1.48')
+    compile("com.zaxxer:HikariCP:3.4.2")
+    compile("tk.mybatis:mapper-spring-boot-starter:2.1.5")
+
+    //lombok
+    annotationProcessor('org.projectlombok:lombok:1.18.8')
+    compileOnly('org.projectlombok:lombok:1.18.8')
+    testAnnotationProcessor('org.projectlombok:lombok:1.18.8')
+    testCompileOnly('org.projectlombok:lombok:1.18.8')
+}
+
+

@@ -40,3 +40,5 @@ target/
 HELP.md
 mvnw
 mvnw.cmd
+gradlew
+gradlew.bat
