@@ -1,0 +1,66 @@
+spring:
+  main:
+    allow-bean-definition-overriding: true
+  application:
+    name: shardingsphere-jdbc-springboot
+  shardingsphere:
+    props:
+      sql:
+        show: true #显示SQL 可以显示原SQL 和转化之后的SQL
+    datasource: # 数据源配置 ,这里配置了两个数据源, 即分两个库 (db0、db1)
+      names: db0,db1
+      db0:
+        type: com.zaxxer.hikari.HikariDataSource
+        driver-class-name: com.mysql.jdbc.Driver
+        jdbc-url: jdbc:mysql://192.168.194.132:3306/skypyb-demo-test_0?useUnicode=true&characterEncoding=UTF-8&useJDBCCompliantTimezoneShift=true&useLegacyDatetimeCode=false&serverTimezone=Asia/Shanghai&useSSL=false
+        username: root
+        password: '614'
+        hikari:
+          minimum-idle: 5
+          idle-timeout: 600000
+          maximum-pool-size: 10
+          auto-commit: true
+          pool-name: MyHikariCP
+          max-lifetime: 1800000
+          connection-timeout: 30000
+          connection-test-query: SELECT 1
+      db1:
+        type: com.zaxxer.hikari.HikariDataSource
+        driver-class-name: com.mysql.jdbc.Driver
+        jdbc-url: jdbc:mysql://192.168.194.132:3306/skypyb-demo-test_1?useUnicode=true&characterEncoding=UTF-8&useJDBCCompliantTimezoneShift=true&useLegacyDatetimeCode=false&serverTimezone=Asia/Shanghai&useSSL=false
+        username: root
+        password: '614'
+        hikari:
+          minimum-idle: 5
+          idle-timeout: 600000
+          maximum-pool-size: 10
+          auto-commit: true
+          pool-name: MyHikariCP
+          max-lifetime: 1800000
+          connection-timeout: 30000
+          connection-test-query: SELECT 1
+    #分片规格
+    sharding:
+      binding-tables: tb_order  # 绑定的逻辑表,  实际的物理表后边是带着0/1的
+      # 默认的数据库分片策略, 这里直接根据买家ID (user_id) 取模, 余0的就变成了 db0, 余1就变成db1
+      default-database-strategy:
+        inline:
+          algorithm-expression: db$->{user_id % 2}
+          sharding-column: user_id
+      # 数据分片的规则, 可以写多个, 这里只写了一个 tb_order
+      tables:
+        tb_order:
+          # 由数据源+表名组成, 和SQL一样
+          actual-data-nodes: db$->{0..1}.tb_order$->{0..1}
+          #分表策略, 和分库策略一样的, 这里根据 订单ID 取模
+          table-strategy:
+            inline:
+              algorithm-expression: tb_order$->{order_id % 2}
+              sharding-column: order_id
+          keyGenerator:
+            type: SNOWFLAKE
+            column: order_id
+
+mybatis:
+  type-aliases-package: com.skypyb.demo.sharding.**.entity
+  mapper-locations: classpath:mybatis/mapper/*.xml
