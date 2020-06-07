@@ -41,6 +41,7 @@ allprojects {
 
 dependencies {
     testCompile('org.springframework.boot:spring-boot-starter-test:2.2.5.RELEASE')
+    compile('org.springframework.boot:spring-boot-starter-jdbc:2.2.5.RELEASE')
     compile ('org.apache.shardingsphere:sharding-jdbc-spring-boot-starter:4.1.0')
     compile('mysql:mysql-connector-java:5.1.48')
     compile("com.zaxxer:HikariCP:3.4.2")
