@@ -73,6 +73,7 @@ public class JwtAuthenticationTokenFilter extends OncePerRequestFilter {
         }
 
         //既然令牌是真的，那就将这个令牌的权限给查出来
+        //注意，这里是反面例子。其实可以改成直接从令牌里边拿，就不用走数据库了，这也是JWT的意义所在。 如果JWT每次请求都要去走一道数据库IO，那为何不用UUID玩普通令牌呢，是吧
         UserDetails userDetails = this.userDetailsService.loadUserByUsername(username);
 
         if (jwtTokenUtil.validateToken(token, username)) {

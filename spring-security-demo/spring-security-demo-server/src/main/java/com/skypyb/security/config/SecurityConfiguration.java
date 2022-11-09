@@ -72,7 +72,7 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
     @Override
     protected void configure(HttpSecurity httpSecurity) throws Exception {
         httpSecurity.authorizeRequests()
-                .anyRequest().authenticated()  //默认请求都需要认证，这里一定要添加
+                .anyRequest().authenticated()  //默认请求都需要认证(认证就是登录)，这里一定要添加
                 .and()
                 .csrf().disable()  //CRSF禁用，因为不使用session
                 .sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS)  //禁用session
