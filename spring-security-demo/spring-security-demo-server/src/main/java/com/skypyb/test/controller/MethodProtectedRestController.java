@@ -8,6 +8,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 /**
  * 测试获取资源
+ * 下边的方法可以使用 {@link PreAuthorize} 等注解进行测试
  */
 @RestController
 public class MethodProtectedRestController {
